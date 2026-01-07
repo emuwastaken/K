@@ -1,16 +1,19 @@
 # BNF Grammar for K
 # Author: Emu Nilsson
 
+
 #--------------------
 # Header and Metadata
 
-[program header]        ::=     [program title] [program author] [program]
+[program header]        ::=     [program title] [program author] [module links] [program]
 
 [program title]         ::=     "PROGRAM" { character } "." "k"
 
 [program author]        ::=     "FÖRFATTARE" ":" [author name] { "," [author name] }
-
 [author name]           ::=     [letter] { [letter] | " " }
+
+[module links]          ::=     #TODO
+
 
 #---------------------
 # Digits and Characters

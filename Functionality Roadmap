@@ -1,191 +1,81 @@
+Roadmap for K
 
-Enkla program för språket K, K(od)
-Author: Emu
-Contributers: Calle & Petter
+In the directory Small Programs are small program samples.
+These samples are to be used when implementing the parser and compiler
+The samples are atomic in what they try to accomplish
+However there is a clear order of introduction.
 
-----------------------------------------------
 
-Basic return
 
-HEL ENTRE()
-<
-    ÅTERVÄND 1;
->
 
---------------------------------------------
 
-Basic variable declarations
 
-HEL ENTRE()
-<
-    HEL:  d, 4;
-    HEL:  e, 5;
-    HEL: resultat d+e;
 
-    ÅTERVÄND resultat;  
->
 
---------------------------------------------
+|---------------------------------------  GRAMMAR  --------------------------------------|
 
-Pekare
+|-------- File Name --------| Finished | ------- Notes ----------------------------------|
 
-HEL ENTRE()
-<
-    HEL PEK: d;
-    #d: 5;
+Basic
+    basic_return.k              []
+    basic_comments.k            []
+    basic_int_dec.k             []
+    basic_pointer_dec.k         []
+    basic_if_else.k             []
+    basic_switch.k              []
+    basic_for.k                 []
+    basic_while.k               []
+    basic_do_while.K            []
 
-    HEL PEK: e, £d;
+Advanced
+    adv_function_call.k         []
+    adv_type_casting.k          []
 
-    ÅTERVÄND #e;  
->
 
-----------------------------------------------
 
-Logical conditions
 
-<, >, >=, <=, ==, !=, ||, &&, XOR
-STÖRRE, MINDRE, STÖLIK, MINLIK, LIKA, INTE, ELLER, OCH, XELLER,
 
-----------------------------------------------
+|---------------------------------------  PARSER  ---------------------------------------|
 
-If statement
+|-------- File Name --------| Finished | ------- Notes ----------------------------------|
 
-HEL ENTRE()
-<
-    HEL:    d, 5;
-    OM(d STÖLIK 6)
-    <
-        ÅTERVÄND d; 
-    > ANNARS OM(d LIKA 5)
-    <
-        ÅTERVÄND d + 5;
-    > ANNARS 
-    <
-        ÅTERVÄND 0;
-    >
-    ÅTERVÄND 1;
->
+Basic
+    basic_return.k              []
+    basic_comments.k            []
+    basic_int_dec.k             []
+    basic_pointer_dec.k         []
+    basic_if_else.k             []
+    basic_switch.k              []
+    basic_for.k                 []
+    basic_while.k               []
+    basic_do_while.K            []
 
------------------------------------------------
+Advanced
+    adv_function_call.k         []
+    adv_type_casting.k          []
 
-Switch case
 
-HEL ENTRE()
-<
-    HEL: a, 4;
-    HEL: b, 5;
 
-    VÄXEL(a)
-    <
-        FALL 3:
-            a: a+b;
-            BRYT;
-    
-        FALL 4:
-            a: a-b;
-            BRYT;
 
-        ANNARS:
-            b: a+b;
-            BRYT;
-    >
+|--------------------------------------  COMPILER  --------------------------------------|
 
-    ÅTERVÄND a+b;
->
+|-------- File Name --------| Finished | ------- Notes ----------------------------------|
 
--------------------------------------------------
 
-Forloop
 
-HEL ENTRE()
-<
-    FÖR(HEL: a,0; a STÖLIK 10; a: a + 1)<
 
-    >
 
-    ÅTERVÄND a;
->
 
---------------------------------------------------
+|---------------------------------------  LINKER  ---------------------------------------|
 
-while loop
+|-------- File Name --------| Finished | ------- Notes ----------------------------------|
 
-HEL ENTRE()
-<
-    HEL:    a, 5;
-    MEDAN(a MINDRE 10)<
-        a: a+1;
-    >
 
-    ÅTERVÄND a;
->
 
----------------------------------------------------
 
-do-while loop
 
-HEL ENTRE()
-<
-    HEL:    a, 5;
-    GÖR
-    <
-        a: a*5;
-    > MEDAN (a MINDRE 1000);
 
-    ÅTERVÄND a;
->
 
-------------------------------------------------
+|---------------------------------------  LOADER  ---------------------------------------|
 
-Funktionsanrop
-
-TOM BERÄKNA(HEL PEK: a, HEL PEK: b)<
-    #a: #a + #b;
-    #b: #a - #b;
-    ÅTERVÄND;
->
-
-HEL HUVUDENTRE()<
-
-    HEL: x, 5;
-    HEL: y, 8;
-
-    BERÄKNA(£x, £y)
-
-    ÅTERVÄND x+y;
->
-
------------------------------------------------
-
-Type casting
-
-hel huvudentre()<
-    flyt: a, 6.5; 
-    flyt: b, 7.33;
-    flyt: c, 8.75;
-
-    hel:  d, 4;
-    hel:  e, 5;
-
-    flyt: resultat, a+b+c+d+e;
-
-    återvänd (hel) resultat  
->
-
---------------------------------------------
-
-Kommentarer
-
-%% Single line comment
-
-%& 
-
-    Multi line comment
-
-&%
-
-HEL ENTRE()<
-
-    ÅTERVÄND 1;
-
->
+|-------- File Name --------| Finished | ------- Notes ----------------------------------|
