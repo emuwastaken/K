@@ -1,0 +1,266 @@
+K (Kod) – Language Specification (Draft)
+Authors: Emu
+Kontributers: Calle, Petter
+
+--------------------------------------------------
+1. General Overview
+--------------------------------------------------
+
+K (Kod) is a statically typed, C-like programming language with Swedish keywords and
+a syntax optimized for the Swedish keyboard layout. The language is designed as a
+pedagogical tool to teach programming concepts similar to C, while lowering the
+syntactic and linguistic barrier for Swedish-speaking students.
+
+The language preserves C semantics wherever possible, while modifying surface syntax
+and keywords for clarity, readability, and ease of typing.
+
+--------------------------------------------------
+2. Source Encoding and Lexical Rules
+--------------------------------------------------
+
+Source files are encoded in UTF-8.
+
+Identifiers may contain extended ASCII characters, including Å Ä Ö.
+
+The language is case-sensitive.
+
+Reserved keywords are written in uppercase.
+User-defined identifiers are conventionally written in lowercase.
+Capitalization is significant and enforced.
+
+--------------------------------------------------
+3. Program Entry Point
+--------------------------------------------------
+
+The program entry point is a function named ENTRE.
+
+ENTRE is not a keyword.
+It is a reserved function name that represents the program entry point,
+analogous to main in C.
+
+Only one ENTRE function may exist per program.
+
+--------------------------------------------------
+4. Types
+--------------------------------------------------
+
+HEL     -> integer type (equivalent to int in C)
+FLYT    -> floating-point type (equivalent to float in C)
+TOM     -> void type
+PEK     -> pointer type modifier
+
+Pointer types are declared explicitly using the PEK keyword.
+
+Example:
+    HEL PEK: p;
+
+--------------------------------------------------
+5. Declarations and Assignments
+--------------------------------------------------
+
+Variable declarations follow the form:
+
+    [TYPE] : identifier , initial_value ;
+
+Examples:
+    HEL: a, 5;
+    FLYT: x, 3.14;
+    HEL PEK: p;
+
+Assignment uses the colon operator:
+
+    identifier : expression ;
+
+Example:
+    a: a + 1;
+
+The colon operator is context-sensitive:
+    If the statement begins with a type, it is a declaration.
+    If the statement begins with an identifier, it is an assignment.
+
+--------------------------------------------------
+6. Pointers
+--------------------------------------------------
+
+The dereference operator is #
+The address-of operator is £
+
+Rules:
+    # may be used in expressions and assignments.
+    # may appear on the left-hand side of an assignment.
+    # is not allowed in declarations.
+    Pointer declarations must use the PEK keyword.
+
+Examples:
+    HEL PEK: p;
+    #p: 5;
+    HEL PEK: q, £p;
+    a: #q + 1;
+
+--------------------------------------------------
+7. Expressions and Operators
+--------------------------------------------------
+
+Arithmetic operators follow C semantics and precedence:
+    +  -  *  /  %
+
+Logical and comparison operators are keyword-based replacements for C operators,
+with identical precedence and associativity.
+
+Mappings:
+    STÖRRE   -> >
+    MINDRE   -> <
+    STÖLIK   -> >=
+    MINLIK   -> <=
+    LIKA     -> ==
+    INTE     -> !=
+    OCH      -> &&
+    ELLER    -> ||
+    XELLER   -> ^
+
+Operator precedence is identical to C.
+
+--------------------------------------------------
+8. Control Flow
+--------------------------------------------------
+
+Conditional statements:
+
+    OM (condition)
+    <
+        ...
+    >
+    ANNARS OM (condition)
+    <
+        ...
+    >
+    ANNARS
+    <
+        ...
+    >
+
+The ANNARS OM construct is a first-class construct and not syntactic sugar.
+
+--------------------------------------------------
+9. Switch Statements
+--------------------------------------------------
+
+Switch syntax:
+
+    VÄXEL (expression)
+    <
+        FALL value:
+            ...
+            BRYT;
+
+        ANNARS:
+            ...
+            BRYT;
+    >
+
+FALL and ANNARS are only valid within a VÄXEL block.
+
+--------------------------------------------------
+10. Loops
+--------------------------------------------------
+
+For loop:
+
+    FÖR ( init ; condition ; update )
+    <
+        ...
+    >
+
+The init section may contain a declaration.
+
+Scope rules:
+    Variables declared inside FÖR are scoped to the loop body.
+    They are not accessible outside the loop unless declared outside.
+    STATISK scope extension is reserved for future implementation.
+
+While loop:
+
+    MEDAN (condition)
+    <
+        ...
+    >
+
+Do-while loop:
+
+    GÖR
+    <
+        ...
+    >
+    MEDAN (condition);
+
+--------------------------------------------------
+11. Functions
+--------------------------------------------------
+
+Function definition syntax:
+
+    [RETURN_TYPE] function_name ( parameter_list )
+    <
+        ...
+    >
+
+Parameters are declared using the same syntax as variables.
+
+Function calls follow C semantics.
+
+--------------------------------------------------
+12. Type Casting
+--------------------------------------------------
+
+Explicit type casting uses keyword casts:
+
+    (TYPE) expression
+
+Example:
+    ÅTERVÄND (HEL) resultat;
+
+Casting semantics are identical to C.
+
+--------------------------------------------------
+13. Return Statement
+--------------------------------------------------
+
+Return keyword:
+
+    ÅTERVÄND;
+
+or
+
+    ÅTERVÄND expression;
+
+--------------------------------------------------
+14. Comments
+--------------------------------------------------
+
+Single-line comment:
+    %% comment text
+
+Multi-line comment:
+    %&
+        comment text
+    &%
+
+--------------------------------------------------
+15. Parsing Strategy
+--------------------------------------------------
+
+The language is designed to be parsed using an LL(1) recursive descent parser.
+
+Grammar rules are structured so that:
+    Statement type can be determined by the first token.
+    Ambiguity between declarations and assignments is resolved lexically.
+    No dangling-else ambiguity exists.
+
+--------------------------------------------------
+16. Design Goals
+--------------------------------------------------
+
+Preserve C semantics.
+Reduce syntactic noise.
+Use Swedish keywords for clarity and pedagogy.
+Remain simple enough for handwritten lexer and parser implementation.

@@ -1,6 +1,7 @@
 
 Enkla program för språket K, K(od)
-Authors: Emu, Calle, Petter
+Author: Emu
+Contributers: Calle & Petter
 
 ----------------------------------------------
 
@@ -120,6 +121,8 @@ HEL ENTRE()
 >
 
 ---------------------------------------------------
+
+do-while loop
 
 HEL ENTRE()
 <
