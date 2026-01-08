@@ -7,17 +7,12 @@ However there is a clear order of introduction.
 
 
 
-
-
-
-
-
 |---------------------------------------  GRAMMAR  --------------------------------------|
 
 |-------- File Name --------| Finished | ------- Notes ----------------------------------|
 
 Basic
-    basic_return.k              []
+    basic_return.k              [X]
     basic_comments.k            []
     basic_int_dec.k             []
     basic_pointer_dec.k         []
@@ -31,6 +26,13 @@ Advanced
     adv_function_call.k         []
     adv_type_casting.k          []
 
+
+
+|---------------------------------------  LEXER  ----------------------------------------|
+
+|-------- File Name --------| Finished | ------- Notes ----------------------------------|
+
+    
 
 
 

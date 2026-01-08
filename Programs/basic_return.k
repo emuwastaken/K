@@ -1,4 +1,4 @@
-PROGRAM basic_return.k
+PROGRAM basic_return
 FÖRFATTARE : Emu Nilsson
 
 HEL ENTRE()
