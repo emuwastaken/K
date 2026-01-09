@@ -1,55 +1,72 @@
 #include <stdio.h>
+#include <locale.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include <io.h>
-#include <wchar.h>
+#include <string.h>
+
 
 #include "lexer.h"
 
-#define INPUT_BUFFER_SIZE (1024 * 1024)
+char * reader(FILE * file);
 
-// ---------------------------------------------------
-// Entry point
-// Pre: input provided via PowerShell pipeline
-// Post: tokens printed to stdout
-// ---------------------------------------------------
-int main(void)
+int main(int argc, char *argv[])
 {
-    wchar_t *buffer;
-    size_t len;
-    Token tok;
+    setlocale(LC_ALL, "");
 
-    // Tell Windows CRT that stdin is UTF-16
-    _setmode(_fileno(stdin), _O_U16TEXT);
-
-    // allocate wide-character buffer
-    buffer = (wchar_t*)malloc(sizeof(wchar_t) * INPUT_BUFFER_SIZE);
-    if (!buffer) {
-        fwprintf(stderr, L"Failed to allocate input buffer\n");
+    //Read file into memory from commandline arguments
+    if (argc < 2) {
+        fprintf(stderr, "Error: No file specified\n");
         return 1;
     }
 
-    // read entire stdin as UTF-16
-    len = fgetws(buffer, INPUT_BUFFER_SIZE, stdin) ? wcslen(buffer) : 0;
-    buffer[len] = L'\0';
+    const char *filename = argv[1];
+    size_t len = strlen(filename);
+    if (len < 2 || filename[len-2] != '.' || filename[len-1] != 'k') {
+        fprintf(stderr, "Error: File must end with .k extension\n");
+        return 1;
+    }
 
-    // initialize lexer with UTF-16 input
-    lexer_init(buffer);
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        fprintf(stderr, "Error: Could not open file\n");
+        return 1;
+    }
+ 
+    char * char_buffer = reader(file);
+    fclose(file);
 
-    // tokenize and print
-    do {
-        tok = next_token();
+    //Test it out!
+    int c = 0;
+    while(char_buffer[c] != '\0'){
+        printf("%c", char_buffer[c++]);
+    }
 
-        printf(
-            "TOKEN %-10d | %-15s | line %d, col %d\n",
-            tok.type,
-            tok.lexeme,
-            tok.line,
-            tok.column
-        );
+    //Invoke the lexer
+    //Pre: Character buffer of srt
+    //Post: Lexeme buffer 
+    char ** lexeme_buffer = lexer(char_buffer);
 
-    } while (tok.type != TOK_EOF);
 
-    free(buffer);
+    
     return 0;
 }
+
+char *reader(FILE *file)
+{
+    fseek(file, 0, SEEK_END);
+    long length = ftell(file);
+    rewind(file);
+
+    char *char_buffer = malloc(length + 1);
+    if (!char_buffer) return NULL;
+
+    size_t i = 0;
+    int c;
+    while ((c = fgetc(file)) != EOF) {
+        char_buffer[i++] = (char)c;
+        //printf("Current byte: %c\n", char_buffer[i-1]);
+    }
+
+    char_buffer[i] = '\0';
+    return char_buffer;
+}
+
