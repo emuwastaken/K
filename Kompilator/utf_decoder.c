@@ -1,5 +1,7 @@
 
 #include <stdlib.h>
+#include <stdio.h>
+
 #include "utf_decoder.h"
 
 CharacterUnit * decode_utf8(const char * byte_buffer, int * out_char_count)
@@ -8,7 +10,6 @@ CharacterUnit * decode_utf8(const char * byte_buffer, int * out_char_count)
     int char_index = 0;
     int capacity   = 64;
 
-    //Start with 64 units
     CharacterUnit * char_units = malloc(sizeof(CharacterUnit) * capacity);
     if (!char_units) return NULL;
 
@@ -74,8 +75,7 @@ CharacterUnit * decode_utf8(const char * byte_buffer, int * out_char_count)
             continue;
         }
 
-
-        //If capacity is exceeded dynamically reallocate 
+        // grow buffer if needed
         if (char_index >= capacity)
         {
             capacity *= 2;
@@ -88,15 +88,50 @@ CharacterUnit * decode_utf8(const char * byte_buffer, int * out_char_count)
             char_units = tmp;
         }
 
+        // store decoded unit
         char_units[char_index].codepoint   = codepoint;
         char_units[char_index].byte_length = byte_len;
+
+        // NEW: copy original UTF-8 bytes
+        for (int i = 0; i < byte_len; i++)
+        {
+            char_units[char_index].bytes[i] =
+                (unsigned char) byte_buffer[byte_index + i];
+        }
 
         char_index++;
         byte_index += byte_len;
     }
 
-    //Return the correct values!
     *out_char_count = char_index;
     return char_units;
 }
+
+
+void print_codepoint_utf8(int codepoint)
+{
+    if (codepoint <= 0x7F)
+    {
+        putchar(codepoint);
+    }
+    else if (codepoint <= 0x7FF)
+    {
+        putchar(0xC0 | (codepoint >> 6));
+        putchar(0x80 | (codepoint & 0x3F));
+    }
+    else if (codepoint <= 0xFFFF)
+    {
+        putchar(0xE0 | (codepoint >> 12));
+        putchar(0x80 | ((codepoint >> 6) & 0x3F));
+        putchar(0x80 | (codepoint & 0x3F));
+    }
+    else
+    {
+        putchar(0xF0 | (codepoint >> 18));
+        putchar(0x80 | ((codepoint >> 12) & 0x3F));
+        putchar(0x80 | ((codepoint >> 6) & 0x3F));
+        putchar(0x80 | (codepoint & 0x3F));
+    }
+}
+
 
