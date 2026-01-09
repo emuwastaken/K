@@ -5,6 +5,7 @@
 
 
 #include "lexer.h"
+#include "utf_decoder.h"
 
 char * reader(FILE * file);
 
@@ -40,13 +41,18 @@ int main(int argc, char *argv[])
         printf("%c", char_buffer[c++]);
     }
 
+    int char_count = 0;
+    CharacterUnit * decode_buffer = decode_utf8(char_buffer, &char_count);
+
+
     //Invoke the lexer
-    //Pre: Character buffer of srt
+    //Pre:  Decoded buffer of src code chars
     //Post: Lexeme buffer 
-    char ** lexeme_buffer = lexer(char_buffer);
-
-
     
+    //char ** lexeme_buffer = lexer(decode_buffer);
+
+
+
     return 0;
 }
 

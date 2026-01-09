@@ -17,6 +17,8 @@ typedef enum TokenType {
 
     TOK_VAL,            //enum
     TOK_STRUKTUR,       //struct
+    TOK_FALT,           // composite value and derefernce access to structs
+
     TOK_TOM,            //void
 
     //Qualifiers
@@ -67,7 +69,6 @@ typedef enum TokenType {
 
     TOK_DEREF,          //  #   dereference
     TOK_ADDRESS,        //  £   address-of
-
     TOK_STORLEKAV,       // STORLEK AV  (keyword baserad sizeof())
 
 
@@ -97,7 +98,7 @@ typedef struct Keyword {
     TokenType token; 
 } Keyword;
 
-static const Keyword keyword[] = {
+static const Keyword keywords[] = {
 
     /* Structure */
     { "PROGRAM",     TOK_PROGRAM        },
@@ -116,6 +117,8 @@ static const Keyword keyword[] = {
 
     { "VAL",         TOK_VAL            },
     { "STRUKTUR",    TOK_STRUKTUR       },
+    { "FÄLT",        TOK_FALT           },
+
     { "TOM",         TOK_TOM            },
 
     /* Qualifiers */
@@ -151,9 +154,14 @@ static const Keyword keyword[] = {
     { "MULT MED",    TOK_MUL_ASSIGN     },
     { "DELAS MED",   TOK_DIV_ASSIGN     },
 
-    /* sizeof-equivalent */
+    { "VÄRDE VID",   TOK_DEREF          },
+    { "ADRESS AV",   TOK_ADDRESS        },
     { "STORLEK AV",  TOK_STORLEKAV      },
 
     /* Sentinel */
     { NULL,          TOK_ERROR          }
 };
+
+
+TokenType lookup_pair   (char * lexeme, char * lextwo);
+TokenType lookup        (char * lexeme);

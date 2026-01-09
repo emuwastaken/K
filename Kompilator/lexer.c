@@ -28,14 +28,38 @@ char ** lexer(char * char_buffer){
             lex_lookahead = 1;
     }
 
+    char * curr_lexeme[MAXLEXSIZE];
+
     while(char_buffer[lex_index] != '\0')
     {
-        //if()
+    
+        /*Algorithm:
+        Build a base keyword e.g HEL, STRUKTUR, STORLEK, etc.
+        Skip whitespaces, newlines, tabular space
+        Automatically accept :, ;, ,, (, ), <, >,
+        */
+        if(char_buffer[lex_index] == ' '){
+            lex_index++;
+            continue;
+        } else if(  (char_buffer[lex_index] >= 'a'   &&
+                    char_buffer[lex_index] <= 'Z')   ||
+                    char_buffer[lex_index] == 'å'   ||
+                    char_buffer[lex_index] == 'ä'   ||
+                    char_buffer[lex_index] == 'ö'   ||
+                    char_buffer[lex_index] == 'Å'   ||
+                    char_buffer[lex_index] == 'Ä'   ||
+                    char_buffer[lex_index] == 'Ö'                                                                                                       
+        ){
+            identify_key(char_buffer + lex_index, &lex_index, &curr_lexeme);    
+        } else if() {
 
-
-
+        }
     }
 
     return lexeme_buffer;
+}
+
+void identify_key (char * char_buffer, int * index_address, char * lexeme){
+
 }
 

@@ -1,2 +1,3 @@
 #include <stdio.h>
-char ** lexer(char * char_buffer);
+char * identify_key (char * char_buffer, int * index_address);
+char ** lexer       (char * char_buffer);
