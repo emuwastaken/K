@@ -1,6 +1,3 @@
-PROGRAM basic_while.k
-FÖRFATTARE : Emu Nilsson
-
 HEL ENTRE()
 <
     HEL:    a, 5;

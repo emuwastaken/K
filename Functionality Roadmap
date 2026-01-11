@@ -12,7 +12,9 @@ However there is a clear order of introduction.
 |-------- File Name --------| Finished | ------- Notes ----------------------------------|
 
 Basic
-    basic_return.k              [X]
+    trivial.ws.k                [X]
+    trivial.comments.k          [X]
+    basic_return.k              []
     basic_comments.k            []
     basic_int_dec.k             []
     basic_pointer_dec.k         []
@@ -32,8 +34,10 @@ Advanced
 
 |-------- File Name --------| Finished | ------- Notes ----------------------------------|
 
-    
-
+    lexer.c/h                   []   
+    utfdecoder.c/h              [X]   
+    tokenkeytab.c/h             [X]   
+   
 
 
 

@@ -1,15 +1,13 @@
-PROGRAM adv_type_casting.k
-FÖRFATTARE : Emu Nilsson
 
-hel huvudentre()<
-    flyt: a, 6.5; 
-    flyt: b, 7.33;
-    flyt: c, 8.75;
+HEL ENTRE()<
+    FLYT: a, 6.5; 
+    FLYT: b, 7.33;
+    FLYT: c, 8.75;
 
-    hel:  d, 4;
-    hel:  e, 5;
+    HEL:  d, 4;
+    HEL:  e, 5;
 
-    flyt: resultat, a+b+c+d+e;
+    FLYT: resultat, a+b+c+d+e;
 
-    återvänd (hel) resultat  
+    ÅTERVÄND (HEL) resultat;  
 >

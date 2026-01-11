@@ -1,0 +1,1415 @@
+PS C:\Users\nilss\K\Kompilator> .\Kom.exe .\Programs\adv_structs.k
+TYPDEF STRUKTUR person <
+    HEL:        ålder;
+    FLYT:       längd;
+    person<2>:  föräldrar;
+>
+
+HEL ENTRE()<
+
+    HEL:  år, 2026;
+    BOK PEK:  månad, "Januari";
+    BOK PEK:  maj, "Maj";
+
+    person:     emu, <
+        25, 193, <>;
+    >;
+
+    person:     anne, <
+        55, 165, <>;
+    >;
+
+    person:     bengt, <
+        58, 190, <>;
+    >;
+
+    FÄLT emu föräldrar<0>:  anne;
+    FÄLT emu föräldrar<1>:  bengt;
+
+    OM(månad LIKA maj)<
+        FÄLT emu ålder ÖKAR;                // Samma som emu.ålder++;
+        FÄLT bengt ålder ÖKAR MED 2;         //Va fan farsan blev 2 år äldre
+        FÄLT anne längd MINSKAR MED 4;        //Morsan krympte
+    > ANNARS <
+        FÄLT emu ålder MINSKAR MED 24;    //Haha get turned into baby idiot
+        FÄLT emu längd MINSKAR MED 140;
+    >
+
+    ÅTERVÄND 0;
+
+>
+LEXER START: char_count=827
+[LOOP] idx=0 row=1 col=1 cp=U+0054 ('T')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='TYPDEF' at 1:1
+[LOOP] idx=6 row=1 col=7 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=7 row=1 col=8 cp=U+0053 ('S')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='STRUKTUR' at 1:8
+[LOOP] idx=15 row=1 col=16 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=16 row=1 col=17 cp=U+0070 ('p')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='person' at 1:17
+[LOOP] idx=22 row=1 col=23 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=23 row=1 col=24 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 1:24
+[LOOP] idx=24 row=1 col=25 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=25 row=2 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=26 row=2 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=27 row=2 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=28 row=2 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=29 row=2 col=5 cp=U+0048 ('H')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='HEL' at 2:5
+[LOOP] idx=32 row=2 col=8 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 2:8
+[LOOP] idx=33 row=2 col=9 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=34 row=2 col=10 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=35 row=2 col=11 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=36 row=2 col=12 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=37 row=2 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=38 row=2 col=14 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=39 row=2 col=15 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=40 row=2 col=16 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=41 row=2 col=17 cp=U+00E5 ('?')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='ålder' at 2:17
+[LOOP] idx=46 row=2 col=22 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 2:22
+[LOOP] idx=47 row=2 col=23 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=48 row=3 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=49 row=3 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=50 row=3 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=51 row=3 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=52 row=3 col=5 cp=U+0046 ('F')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='FLYT' at 3:5
+[LOOP] idx=56 row=3 col=9 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 3:9
+[LOOP] idx=57 row=3 col=10 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=58 row=3 col=11 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=59 row=3 col=12 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=60 row=3 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=61 row=3 col=14 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=62 row=3 col=15 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=63 row=3 col=16 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=64 row=3 col=17 cp=U+006C ('l')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='längd' at 3:17
+[LOOP] idx=69 row=3 col=22 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 3:22
+[LOOP] idx=70 row=3 col=23 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=71 row=4 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=72 row=4 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=73 row=4 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=74 row=4 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=75 row=4 col=5 cp=U+0070 ('p')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='person' at 4:5
+[LOOP] idx=81 row=4 col=11 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 4:11
+[LOOP] idx=82 row=4 col=12 cp=U+0032 ('2')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='2' at 4:12
+[LOOP] idx=83 row=4 col=13 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 4:13
+[LOOP] idx=84 row=4 col=14 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 4:14
+[LOOP] idx=85 row=4 col=15 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=86 row=4 col=16 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=87 row=4 col=17 cp=U+0066 ('f')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='föräldrar' at 4:17
+[LOOP] idx=96 row=4 col=26 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 4:26
+[LOOP] idx=97 row=4 col=27 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=98 row=4 col=28 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=99 row=4 col=29 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=100 row=4 col=30 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=101 row=4 col=31 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=102 row=4 col=32 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=103 row=4 col=33 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=104 row=4 col=34 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=105 row=4 col=35 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=106 row=4 col=36 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=107 row=4 col=37 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=108 row=5 col=1 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 5:1
+[LOOP] idx=109 row=5 col=2 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=110 row=6 col=1 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=111 row=7 col=1 cp=U+0048 ('H')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='HEL' at 7:1
+[LOOP] idx=114 row=7 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=115 row=7 col=5 cp=U+0045 ('E')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='ENTRE' at 7:5
+[LOOP] idx=120 row=7 col=10 cp=U+0028 ('(')
+  DELIMITER '('
+    identifyDelim()
+  STORE lexeme='(' at 7:10
+[LOOP] idx=121 row=7 col=11 cp=U+0029 (')')
+  DELIMITER ')'
+    identifyDelim()
+  STORE lexeme=')' at 7:11
+[LOOP] idx=122 row=7 col=12 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 7:12
+[LOOP] idx=123 row=7 col=13 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=124 row=8 col=1 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=125 row=9 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=126 row=9 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=127 row=9 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=128 row=9 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=129 row=9 col=5 cp=U+0048 ('H')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='HEL' at 9:5
+[LOOP] idx=132 row=9 col=8 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 9:8
+[LOOP] idx=133 row=9 col=9 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=134 row=9 col=10 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=135 row=9 col=11 cp=U+00E5 ('?')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='år' at 9:11
+[LOOP] idx=137 row=9 col=13 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 9:13
+[LOOP] idx=138 row=9 col=14 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=139 row=9 col=15 cp=U+0032 ('2')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='2026' at 9:15
+[LOOP] idx=143 row=9 col=19 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 9:19
+[LOOP] idx=144 row=9 col=20 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=145 row=10 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=146 row=10 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=147 row=10 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=148 row=10 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=149 row=10 col=5 cp=U+0042 ('B')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='BOK' at 10:5
+[LOOP] idx=152 row=10 col=8 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=153 row=10 col=9 cp=U+0050 ('P')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='PEK' at 10:9
+[LOOP] idx=156 row=10 col=12 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 10:12
+[LOOP] idx=157 row=10 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=158 row=10 col=14 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=159 row=10 col=15 cp=U+006D ('m')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='månad' at 10:15
+[LOOP] idx=164 row=10 col=20 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 10:20
+[LOOP] idx=165 row=10 col=21 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=166 row=10 col=22 cp=U+0022 ('"')
+  STRING START
+    identifyString()
+  STORE lexeme='Januari' at 10:22
+[LOOP] idx=175 row=10 col=31 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 10:31
+[LOOP] idx=176 row=10 col=32 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=177 row=11 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=178 row=11 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=179 row=11 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=180 row=11 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=181 row=11 col=5 cp=U+0042 ('B')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='BOK' at 11:5
+[LOOP] idx=184 row=11 col=8 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=185 row=11 col=9 cp=U+0050 ('P')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='PEK' at 11:9
+[LOOP] idx=188 row=11 col=12 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 11:12
+[LOOP] idx=189 row=11 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=190 row=11 col=14 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=191 row=11 col=15 cp=U+006D ('m')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='maj' at 11:15
+[LOOP] idx=194 row=11 col=18 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 11:18
+[LOOP] idx=195 row=11 col=19 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=196 row=11 col=20 cp=U+0022 ('"')
+  STRING START
+    identifyString()
+  STORE lexeme='Maj' at 11:20
+[LOOP] idx=201 row=11 col=25 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 11:25
+[LOOP] idx=202 row=11 col=26 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=203 row=12 col=1 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=204 row=13 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=205 row=13 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=206 row=13 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=207 row=13 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=208 row=13 col=5 cp=U+0070 ('p')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='person' at 13:5
+[LOOP] idx=214 row=13 col=11 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 13:11
+[LOOP] idx=215 row=13 col=12 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=216 row=13 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=217 row=13 col=14 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=218 row=13 col=15 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=219 row=13 col=16 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=220 row=13 col=17 cp=U+0065 ('e')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='emu' at 13:17
+[LOOP] idx=223 row=13 col=20 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 13:20
+[LOOP] idx=224 row=13 col=21 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=225 row=13 col=22 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 13:22
+[LOOP] idx=226 row=13 col=23 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=227 row=14 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=228 row=14 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=229 row=14 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=230 row=14 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=231 row=14 col=5 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=232 row=14 col=6 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=233 row=14 col=7 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=234 row=14 col=8 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=235 row=14 col=9 cp=U+0032 ('2')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='25' at 14:9
+[LOOP] idx=237 row=14 col=11 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 14:11
+[LOOP] idx=238 row=14 col=12 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=239 row=14 col=13 cp=U+0031 ('1')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='193' at 14:13
+[LOOP] idx=242 row=14 col=16 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 14:16
+[LOOP] idx=243 row=14 col=17 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=244 row=14 col=18 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 14:18
+[LOOP] idx=245 row=14 col=19 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 14:19
+[LOOP] idx=246 row=14 col=20 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 14:20
+[LOOP] idx=247 row=14 col=21 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=248 row=15 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=249 row=15 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=250 row=15 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=251 row=15 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=252 row=15 col=5 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 15:5
+[LOOP] idx=253 row=15 col=6 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 15:6
+[LOOP] idx=254 row=15 col=7 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=255 row=16 col=1 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=256 row=17 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=257 row=17 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=258 row=17 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=259 row=17 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=260 row=17 col=5 cp=U+0070 ('p')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='person' at 17:5
+[LOOP] idx=266 row=17 col=11 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 17:11
+[LOOP] idx=267 row=17 col=12 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=268 row=17 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=269 row=17 col=14 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=270 row=17 col=15 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=271 row=17 col=16 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=272 row=17 col=17 cp=U+0061 ('a')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='anne' at 17:17
+[LOOP] idx=276 row=17 col=21 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 17:21
+[LOOP] idx=277 row=17 col=22 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=278 row=17 col=23 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 17:23
+[LOOP] idx=279 row=17 col=24 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=280 row=18 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=281 row=18 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=282 row=18 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=283 row=18 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=284 row=18 col=5 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=285 row=18 col=6 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=286 row=18 col=7 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=287 row=18 col=8 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=288 row=18 col=9 cp=U+0035 ('5')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='55' at 18:9
+[LOOP] idx=290 row=18 col=11 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 18:11
+[LOOP] idx=291 row=18 col=12 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=292 row=18 col=13 cp=U+0031 ('1')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='165' at 18:13
+[LOOP] idx=295 row=18 col=16 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 18:16
+[LOOP] idx=296 row=18 col=17 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=297 row=18 col=18 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 18:18
+[LOOP] idx=298 row=18 col=19 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 18:19
+[LOOP] idx=299 row=18 col=20 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 18:20
+[LOOP] idx=300 row=18 col=21 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=301 row=19 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=302 row=19 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=303 row=19 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=304 row=19 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=305 row=19 col=5 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 19:5
+[LOOP] idx=306 row=19 col=6 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 19:6
+[LOOP] idx=307 row=19 col=7 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=308 row=20 col=1 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=309 row=21 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=310 row=21 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=311 row=21 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=312 row=21 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=313 row=21 col=5 cp=U+0070 ('p')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='person' at 21:5
+[LOOP] idx=319 row=21 col=11 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 21:11
+[LOOP] idx=320 row=21 col=12 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=321 row=21 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=322 row=21 col=14 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=323 row=21 col=15 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=324 row=21 col=16 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=325 row=21 col=17 cp=U+0062 ('b')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='bengt' at 21:17
+[LOOP] idx=330 row=21 col=22 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 21:22
+[LOOP] idx=331 row=21 col=23 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=332 row=21 col=24 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 21:24
+[LOOP] idx=333 row=21 col=25 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=334 row=22 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=335 row=22 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=336 row=22 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=337 row=22 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=338 row=22 col=5 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=339 row=22 col=6 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=340 row=22 col=7 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=341 row=22 col=8 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=342 row=22 col=9 cp=U+0035 ('5')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='58' at 22:9
+[LOOP] idx=344 row=22 col=11 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 22:11
+[LOOP] idx=345 row=22 col=12 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=346 row=22 col=13 cp=U+0031 ('1')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='190' at 22:13
+[LOOP] idx=349 row=22 col=16 cp=U+002C (',')
+  DELIMITER ','
+    identifyDelim()
+  STORE lexeme=',' at 22:16
+[LOOP] idx=350 row=22 col=17 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=351 row=22 col=18 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 22:18
+[LOOP] idx=352 row=22 col=19 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 22:19
+[LOOP] idx=353 row=22 col=20 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 22:20
+[LOOP] idx=354 row=22 col=21 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=355 row=23 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=356 row=23 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=357 row=23 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=358 row=23 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=359 row=23 col=5 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 23:5
+[LOOP] idx=360 row=23 col=6 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 23:6
+[LOOP] idx=361 row=23 col=7 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=362 row=24 col=1 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=363 row=25 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=364 row=25 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=365 row=25 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=366 row=25 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=367 row=25 col=5 cp=U+0046 ('F')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='FÄLT' at 25:5
+[LOOP] idx=371 row=25 col=9 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=372 row=25 col=10 cp=U+0065 ('e')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='emu' at 25:10
+[LOOP] idx=375 row=25 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=376 row=25 col=14 cp=U+0066 ('f')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='föräldrar' at 25:14
+[LOOP] idx=385 row=25 col=23 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 25:23
+[LOOP] idx=386 row=25 col=24 cp=U+0030 ('0')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='0' at 25:24
+[LOOP] idx=387 row=25 col=25 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 25:25
+[LOOP] idx=388 row=25 col=26 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 25:26
+[LOOP] idx=389 row=25 col=27 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=390 row=25 col=28 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=391 row=25 col=29 cp=U+0061 ('a')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='anne' at 25:29
+[LOOP] idx=395 row=25 col=33 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 25:33
+[LOOP] idx=396 row=25 col=34 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=397 row=26 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=398 row=26 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=399 row=26 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=400 row=26 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=401 row=26 col=5 cp=U+0046 ('F')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='FÄLT' at 26:5
+[LOOP] idx=405 row=26 col=9 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=406 row=26 col=10 cp=U+0065 ('e')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='emu' at 26:10
+[LOOP] idx=409 row=26 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=410 row=26 col=14 cp=U+0066 ('f')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='föräldrar' at 26:14
+[LOOP] idx=419 row=26 col=23 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 26:23
+[LOOP] idx=420 row=26 col=24 cp=U+0031 ('1')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='1' at 26:24
+[LOOP] idx=421 row=26 col=25 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 26:25
+[LOOP] idx=422 row=26 col=26 cp=U+003A (':')
+  DELIMITER ':'
+    identifyDelim()
+  STORE lexeme=':' at 26:26
+[LOOP] idx=423 row=26 col=27 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=424 row=26 col=28 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=425 row=26 col=29 cp=U+0062 ('b')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='bengt' at 26:29
+[LOOP] idx=430 row=26 col=34 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 26:34
+[LOOP] idx=431 row=26 col=35 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=432 row=27 col=1 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=433 row=28 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=434 row=28 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=435 row=28 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=436 row=28 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=437 row=28 col=5 cp=U+004F ('O')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='OM' at 28:5
+[LOOP] idx=439 row=28 col=7 cp=U+0028 ('(')
+  DELIMITER '('
+    identifyDelim()
+  STORE lexeme='(' at 28:7
+[LOOP] idx=440 row=28 col=8 cp=U+006D ('m')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='månad' at 28:8
+[LOOP] idx=445 row=28 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=446 row=28 col=14 cp=U+004C ('L')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='LIKA' at 28:14
+[LOOP] idx=450 row=28 col=18 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=451 row=28 col=19 cp=U+006D ('m')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='maj' at 28:19
+[LOOP] idx=454 row=28 col=22 cp=U+0029 (')')
+  DELIMITER ')'
+    identifyDelim()
+  STORE lexeme=')' at 28:22
+[LOOP] idx=455 row=28 col=23 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 28:23
+[LOOP] idx=456 row=28 col=24 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=457 row=29 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=458 row=29 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=459 row=29 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=460 row=29 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=461 row=29 col=5 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=462 row=29 col=6 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=463 row=29 col=7 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=464 row=29 col=8 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=465 row=29 col=9 cp=U+0046 ('F')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='FÄLT' at 29:9
+[LOOP] idx=469 row=29 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=470 row=29 col=14 cp=U+0065 ('e')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='emu' at 29:14
+[LOOP] idx=473 row=29 col=17 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=474 row=29 col=18 cp=U+00E5 ('?')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='ålder' at 29:18
+[LOOP] idx=479 row=29 col=23 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=480 row=29 col=24 cp=U+00D6 ('?')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='ÖKAR' at 29:24
+[LOOP] idx=484 row=29 col=28 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 29:28
+[LOOP] idx=485 row=29 col=29 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=486 row=29 col=30 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=487 row=29 col=31 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=488 row=29 col=32 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=489 row=29 col=33 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=490 row=29 col=34 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=491 row=29 col=35 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=492 row=29 col=36 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=493 row=29 col=37 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=494 row=29 col=38 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=495 row=29 col=39 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=496 row=29 col=40 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=497 row=29 col=41 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=498 row=29 col=42 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=499 row=29 col=43 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=500 row=29 col=44 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=501 row=29 col=45 cp=U+002F ('/')
+  COMMENT //
+[LOOP] idx=526 row=29 col=70 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=527 row=30 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=528 row=30 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=529 row=30 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=530 row=30 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=531 row=30 col=5 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=532 row=30 col=6 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=533 row=30 col=7 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=534 row=30 col=8 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=535 row=30 col=9 cp=U+0046 ('F')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='FÄLT' at 30:9
+[LOOP] idx=539 row=30 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=540 row=30 col=14 cp=U+0062 ('b')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='bengt' at 30:14
+[LOOP] idx=545 row=30 col=19 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=546 row=30 col=20 cp=U+00E5 ('?')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='ålder' at 30:20
+[LOOP] idx=551 row=30 col=25 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=552 row=30 col=26 cp=U+00D6 ('?')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='ÖKAR' at 30:26
+[LOOP] idx=556 row=30 col=30 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=557 row=30 col=31 cp=U+004D ('M')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='MED' at 30:31
+[LOOP] idx=560 row=30 col=34 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=561 row=30 col=35 cp=U+0032 ('2')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='2' at 30:35
+[LOOP] idx=562 row=30 col=36 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 30:36
+[LOOP] idx=563 row=30 col=37 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=564 row=30 col=38 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=565 row=30 col=39 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=566 row=30 col=40 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=567 row=30 col=41 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=568 row=30 col=42 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=569 row=30 col=43 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=570 row=30 col=44 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=571 row=30 col=45 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=572 row=30 col=46 cp=U+002F ('/')
+  COMMENT //
+[LOOP] idx=603 row=30 col=77 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=604 row=31 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=605 row=31 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=606 row=31 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=607 row=31 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=608 row=31 col=5 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=609 row=31 col=6 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=610 row=31 col=7 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=611 row=31 col=8 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=612 row=31 col=9 cp=U+0046 ('F')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='FÄLT' at 31:9
+[LOOP] idx=616 row=31 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=617 row=31 col=14 cp=U+0061 ('a')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='anne' at 31:14
+[LOOP] idx=621 row=31 col=18 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=622 row=31 col=19 cp=U+006C ('l')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='längd' at 31:19
+[LOOP] idx=627 row=31 col=24 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=628 row=31 col=25 cp=U+004D ('M')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='MINSKAR' at 31:25
+[LOOP] idx=635 row=31 col=32 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=636 row=31 col=33 cp=U+004D ('M')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='MED' at 31:33
+[LOOP] idx=639 row=31 col=36 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=640 row=31 col=37 cp=U+0034 ('4')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='4' at 31:37
+[LOOP] idx=641 row=31 col=38 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 31:38
+[LOOP] idx=642 row=31 col=39 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=643 row=31 col=40 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=644 row=31 col=41 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=645 row=31 col=42 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=646 row=31 col=43 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=647 row=31 col=44 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=648 row=31 col=45 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=649 row=31 col=46 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=650 row=31 col=47 cp=U+002F ('/')
+  COMMENT //
+[LOOP] idx=666 row=31 col=63 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=667 row=32 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=668 row=32 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=669 row=32 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=670 row=32 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=671 row=32 col=5 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 32:5
+[LOOP] idx=672 row=32 col=6 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=673 row=32 col=7 cp=U+0041 ('A')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='ANNARS' at 32:7
+[LOOP] idx=679 row=32 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=680 row=32 col=14 cp=U+003C ('<')
+  DELIMITER '<'
+    identifyDelim()
+  STORE lexeme='<' at 32:14
+[LOOP] idx=681 row=32 col=15 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=682 row=33 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=683 row=33 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=684 row=33 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=685 row=33 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=686 row=33 col=5 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=687 row=33 col=6 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=688 row=33 col=7 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=689 row=33 col=8 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=690 row=33 col=9 cp=U+0046 ('F')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='FÄLT' at 33:9
+[LOOP] idx=694 row=33 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=695 row=33 col=14 cp=U+0065 ('e')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='emu' at 33:14
+[LOOP] idx=698 row=33 col=17 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=699 row=33 col=18 cp=U+00E5 ('?')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='ålder' at 33:18
+[LOOP] idx=704 row=33 col=23 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=705 row=33 col=24 cp=U+004D ('M')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='MINSKAR' at 33:24
+[LOOP] idx=712 row=33 col=31 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=713 row=33 col=32 cp=U+004D ('M')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='MED' at 33:32
+[LOOP] idx=716 row=33 col=35 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=717 row=33 col=36 cp=U+0032 ('2')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='24' at 33:36
+[LOOP] idx=719 row=33 col=38 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 33:38
+[LOOP] idx=720 row=33 col=39 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=721 row=33 col=40 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=722 row=33 col=41 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=723 row=33 col=42 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=724 row=33 col=43 cp=U+002F ('/')
+  COMMENT //
+[LOOP] idx=757 row=33 col=76 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=758 row=34 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=759 row=34 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=760 row=34 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=761 row=34 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=762 row=34 col=5 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=763 row=34 col=6 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=764 row=34 col=7 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=765 row=34 col=8 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=766 row=34 col=9 cp=U+0046 ('F')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='FÄLT' at 34:9
+[LOOP] idx=770 row=34 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=771 row=34 col=14 cp=U+0065 ('e')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='emu' at 34:14
+[LOOP] idx=774 row=34 col=17 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=775 row=34 col=18 cp=U+006C ('l')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='längd' at 34:18
+[LOOP] idx=780 row=34 col=23 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=781 row=34 col=24 cp=U+004D ('M')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='MINSKAR' at 34:24
+[LOOP] idx=788 row=34 col=31 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=789 row=34 col=32 cp=U+004D ('M')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='MED' at 34:32
+[LOOP] idx=792 row=34 col=35 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=793 row=34 col=36 cp=U+0031 ('1')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='140' at 34:36
+[LOOP] idx=796 row=34 col=39 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 34:39
+[LOOP] idx=797 row=34 col=40 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=798 row=34 col=41 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=799 row=34 col=42 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=800 row=34 col=43 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=801 row=34 col=44 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=802 row=35 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=803 row=35 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=804 row=35 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=805 row=35 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=806 row=35 col=5 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 35:5
+[LOOP] idx=807 row=35 col=6 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=808 row=36 col=1 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=809 row=37 col=1 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=810 row=37 col=2 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=811 row=37 col=3 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=812 row=37 col=4 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=813 row=37 col=5 cp=U+00C5 ('?')
+  IDENTIFIER START
+    identifyID()
+  STORE lexeme='ÅTERVÄND' at 37:5
+[LOOP] idx=821 row=37 col=13 cp=U+0020 (' ')
+  WHITESPACE
+[LOOP] idx=822 row=37 col=14 cp=U+0030 ('0')
+  NUMBER START
+    identifyNum()
+  STORE lexeme='0' at 37:14
+[LOOP] idx=823 row=37 col=15 cp=U+003B (';')
+  DELIMITER ';'
+    identifyDelim()
+  STORE lexeme=';' at 37:15
+[LOOP] idx=824 row=37 col=16 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=825 row=38 col=1 cp=U+000A ('?')
+  WHITESPACE
+[LOOP] idx=826 row=39 col=1 cp=U+003E ('>')
+  DELIMITER '>'
+    identifyDelim()
+  STORE lexeme='>' at 39:1
+LEXING DONE: lexemes=153
+RESOLVE[0]: 'TYPDEF'
+  -> TOKEN 214
+RESOLVE[1]: 'STRUKTUR'
+  -> TOKEN 211
+RESOLVE[2]: 'person'
+  -> TOKEN 259
+RESOLVE[3]: '<'
+  -> TOKEN 255
+RESOLVE[4]: 'HEL'
+  -> TOKEN 203
+RESOLVE[5]: ':'
+  -> TOKEN 237
+RESOLVE[6]: 'ålder'
+  -> TOKEN 259
+RESOLVE[7]: ';'
+  -> TOKEN 257
+RESOLVE[8]: 'FLYT'
+  -> TOKEN 204
+RESOLVE[9]: ':'
+  -> TOKEN 237
+RESOLVE[10]: 'längd'
+  -> TOKEN 259
+RESOLVE[11]: ';'
+  -> TOKEN 257
+RESOLVE[12]: 'person'
+  -> TOKEN 259
+RESOLVE[13]: '<'
+  -> TOKEN 255
+RESOLVE[14]: '2'
+  -> TOKEN 260
+RESOLVE[15]: '>'
+  -> TOKEN 256
+RESOLVE[16]: ':'
+  -> TOKEN 237
+RESOLVE[17]: 'föräldrar'
+  -> TOKEN 259
+RESOLVE[18]: ';'
+  -> TOKEN 257
+RESOLVE[19]: '>'
+  -> TOKEN 256
+RESOLVE[20]: 'HEL'
+  -> TOKEN 203
+RESOLVE[21]: 'ENTRE'
+  -> TOKEN 202
+RESOLVE[22]: '('
+  -> TOKEN 253
+RESOLVE[23]: ')'
+  -> TOKEN 254
+RESOLVE[24]: '<'
+  -> TOKEN 255
+RESOLVE[25]: 'HEL'
+  -> TOKEN 203
+RESOLVE[26]: ':'
+  -> TOKEN 237
+RESOLVE[27]: 'år'
+  -> TOKEN 259
+RESOLVE[28]: ','
+  -> TOKEN 258
+RESOLVE[29]: '2026'
+  -> TOKEN 260
+RESOLVE[30]: ';'
+  -> TOKEN 257
+RESOLVE[31]: 'BOK'
+  -> TOKEN 205
+RESOLVE[32]: 'PEK'
+  -> TOKEN 215
+RESOLVE[33]: ':'
+  -> TOKEN 237
+RESOLVE[34]: 'månad'
+  -> TOKEN 259
+RESOLVE[35]: ','
+  -> TOKEN 258
+RESOLVE[36]: 'Januari'
+  -> TOKEN 259
+RESOLVE[37]: ';'
+  -> TOKEN 257
+RESOLVE[38]: ''
+  -> TOKEN 259
+RESOLVE[39]: 'PEK'
+  -> TOKEN 215
+RESOLVE[40]: ':'
+  -> TOKEN 237
+RESOLVE[41]: 'maj'
+  -> TOKEN 259
+RESOLVE[42]: ','
+  -> TOKEN 258
+RESOLVE[43]: 'Maj'
+  -> TOKEN 259
+RESOLVE[44]: '  ; o'
+  -> TOKEN 259
+RESOLVE[45]: '
+'
+  -> TOKEN 259
+'ESOLVE[46]: '
+  -> TOKEN 259
+RESOLVE[47]: 'emu'
+  -> TOKEN 259
+RESOLVE[48]: ','
+  -> TOKEN 258
+RESOLVE[49]: '<'
+  -> TOKEN 255
+RESOLVE[50]: '25'
+  -> TOKEN 260
+RESOLVE[51]: ''
+  -> TOKEN 259
+RESOLVE[52]: '  ; o'
+  -> TOKEN 259
+RESOLVE[53]: ','
+  -> TOKEN 258
+'ESOLVE[54]: '
+  -> TOKEN 259
+RESOLVE[55]: '>'
+  -> TOKEN 256
+RESOLVE[56]: ';'
+  -> TOKEN 257
+RESOLVE[57]: '>'
+  -> TOKEN 256
+PS C:\Users\nilss\K\Kompilator>
+

@@ -1,13 +1,10 @@
-PROGRAM basic_comments.k
-FÖRFATTARE : Emu Nilsson
+// Single line comment
 
-%% Single line comment
-
-%& 
+/% 
 
     Multi line comment
 
-&%
+%/
 
 HEL ENTRE()
 <

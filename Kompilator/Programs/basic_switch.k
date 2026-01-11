@@ -1,6 +1,3 @@
-PROGRAM basic_switch.k
-FÖRFATTARE : Emu Nilsson
-
 HEL ENTRE()
 <
     HEL: a, 4;

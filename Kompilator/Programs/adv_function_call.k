@@ -1,5 +1,4 @@
-PROGRAM adv_function_call.k
-FÖRFATTARE : Emu Nilsson
+
 
 TOM BERÄKNA(HEL PEK: a, HEL PEK: b)<
     #a: #a + #b;
