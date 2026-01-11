@@ -14,20 +14,23 @@ int main(int argc, char *argv[])
 {
     setlocale(LC_ALL, "");
 
-    if (argc < 2) {
+    if (argc < 2)
+    {
         fprintf(stderr, "Error: No file specified\n");
         return 1;
     }
 
     const char *filename = argv[1];
     size_t len = strlen(filename);
-    if (len < 2 || filename[len - 2] != '.' || filename[len - 1] != 'k') {
+    if (len < 2 || filename[len - 2] != '.' || filename[len - 1] != 'k')
+    {
         fprintf(stderr, "Error: File must end with .k extension\n");
         return 1;
     }
 
     FILE *file = fopen(filename, "r");
-    if (!file) {
+    if (!file)
+    {
         fprintf(stderr, "Error: Could not open file\n");
         return 1;
     }
@@ -35,7 +38,8 @@ int main(int argc, char *argv[])
     char *char_buffer = reader(file);
     fclose(file);
 
-    if (!char_buffer) {
+    if (!char_buffer)
+    {
         fprintf(stderr, "Error: Failed to read file\n");
         return 1;
     }
@@ -43,22 +47,61 @@ int main(int argc, char *argv[])
     printf("%s\n", char_buffer);
 
     int char_count = 0;
-    char local_char[4];
     CharacterUnit *decode_buffer = decode_utf8(char_buffer, &char_count);
 
-    /*
-    printf("Current UTF-8 Codes for file contents:\n");
-    for (int i = 0; i < char_count; i++) {
-        printf("Char %d: U+%04X (%c)\n", i, decode_buffer[i].codepoint, 
-               (decode_buffer[i].codepoint < 128) ? (char)decode_buffer[i].codepoint : '?');
-    } */
-
-
+    /* -----------------------------
+       Outputs from lexer
+       ----------------------------- */
 
     TokenBuffer *token_buffer = NULL;
-    int token_amount = 0;
+    int token_count = 0;
 
-    lexer(decode_buffer, char_count, &token_buffer, &token_amount);
+    char **lexemes = NULL;
+    int lexeme_count = 0;
+    int *lexeme_row = NULL;
+    int *lexeme_col = NULL;
+
+    /* -----------------------------
+       Run lexer
+       ----------------------------- */
+
+    lexer(
+        decode_buffer,
+        char_count,
+
+        &token_buffer,
+        &token_count,
+
+        &lexemes,
+        &lexeme_count,
+        &lexeme_row,
+        &lexeme_col
+    );
+    
+    /* Display lexemes */
+    for (int i = 0; i < lexeme_count; i++)
+    {
+        printf("Lexeme %d: %s (row: %d, col: %d)\n", i, lexemes[i], lexeme_row[i], lexeme_col[i]);
+    }
+
+    /* Display token buffer */
+    for (int i = 0; i < token_count; i++)
+    {
+        printf("Token %d: %s\n", i, tok2name(token_buffer[i].token));
+    }
+
+    /* -----------------------------
+       Cleanup
+       ----------------------------- */
+
+    for (int i = 0; i < lexeme_count; i++)
+    {
+        free(lexemes[i]);
+    }
+
+    free(lexemes);
+    free(lexeme_row);
+    free(lexeme_col);
 
     free(token_buffer);
     free(char_buffer);
@@ -66,6 +109,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-
-

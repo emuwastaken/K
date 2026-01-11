@@ -62,16 +62,35 @@ CharacterUnit lookahead(LexState *state);
 void lexer(
     CharacterUnit *decode_buffer,
     int char_count,
-    TokenBuffer **out_tokens,   
-    int *out_token_count
-){
+
+    TokenBuffer **out_tokens,
+    int *out_token_count,
+
+    char ***out_lexemes,
+    int *out_lexeme_count,
+    int **out_lexeme_cols,
+    int **out_lexeme_rows
+)
+{
     LexState state = {0};
-    printd("Init state");
+    //printd("Init state");
     init_lex_state(&state, char_count, decode_buffer);      //Init struct for lexing
-    printd("Entering lex_scan()");
+    //printd("Entering lex_scan()");
     lex_scan(&state);                                       //While loop scan
-    //init_lex_resolve(&state);                               //Re-init struct for token resolving
-    //lex_resolve(&state);                                    //While loop resolver
+    init_lex_resolve(&state);                               //Re-init struct for token resolving
+    lex_resolve(&state);                                    //While loop resolver
+
+    // tokens
+    *out_tokens      = state.tokens;
+    *out_token_count = state.token_count;
+
+    // lexemes
+    *out_lexemes       = state.lexemes;
+    *out_lexeme_rows   = state.lexeme_row;
+    *out_lexeme_cols   = state.lexeme_col;
+    *out_lexeme_count  = state.lexeme_count;
+
+
 }
 
 /* Subroutines */
@@ -87,51 +106,51 @@ void init_lex_state(LexState * state, int char_count, CharacterUnit * decode_buf
 
 void lex_scan(LexState * state){
 
-    printf("Total characters: %d\n", state -> char_count);
+    //printf("Total characters: %d\n", state -> char_count);
 
     state -> current = peek(state);
     state -> next = lookahead(state);
 
     while(state -> lex_index < state -> char_count)
     {
-        printf("Current codepoint: %d\n", state -> current.codepoint);
+        //printf("Current codepoint: %d\n", state -> current.codepoint);
 
         if (state -> current.codepoint == HORIZONTAL_TAB ||
             state -> current.codepoint == NEWLINE        ||
             state -> current.codepoint == SPACE          ||
             state -> current.codepoint == CARRIAGE_RETURN) 
         {
-            printd("\nEntering whitespace\n");
+            //printd("\nEntering whitespace\n");
 
             switch(state -> current.codepoint){
                 case HORIZONTAL_TAB:
                     state -> col += 4;
-                    printd("Found a tab");
+                    //printd("Found a tab");
                     advance(state);
                     break;
 
                 case NEWLINE:
                     state -> col = 1;
                     state -> row ++;
-                    printd("Found a newline");
+                    //printd("Found a newline");
                     advance(state);
                     break;
 
                 case SPACE:
                     state -> col ++;
-                    printd("Found a space");
+                    //printd("Found a space");
                     advance(state);
                     break;
 
                 case CARRIAGE_RETURN:
                     state -> col = 1;
                     state -> row ++;
-                    printd("Found a carriage return");
+                    //printd("Found a carriage return");
                     advance(state);
                     break;
 
                 default:
-                    printd("Error reading whitespace character");
+                    //printd("Error reading whitespace character");
                     advance(state);
                     break;
             }
@@ -143,7 +162,7 @@ void lex_scan(LexState * state){
                 (state -> next.codepoint == '/' ||
                  state -> next.codepoint == '%'))
         {
-            printd("\nEntering comments\n");
+            //printd("\nEntering comments\n");
 
             if(state -> next.codepoint == '/') 
                 identify_single_comment(state);
@@ -164,7 +183,7 @@ void lex_scan(LexState * state){
             (state -> current.codepoint == 0x00F6)
         ) {
             identify_ID(state);
-            printf("current lex_index: %d\n", state -> lex_index);
+            //printf("current lex_index: %d\n", state -> lex_index);
         } else if(
             (state -> current.codepoint == '"')
         ) {
@@ -190,12 +209,12 @@ void lex_scan(LexState * state){
             identify_delimiter(state);
         }
         else {
-            printd("Resolving scan error!");
+            //printd("Resolving scan error!");
             advance(state);
         }
-        printd("Loop iteration complete, starting next iteration!\n");
+        //printd("Loop iteration complete, starting next iteration!\n");
     }
-    printd("Lex Scanning Complete!");
+    //printd("Lex Scanning Complete!");
 }
 
 
@@ -209,7 +228,7 @@ CharacterUnit lookahead(LexState * state) {
 
 void advance(LexState * state)
 {
-    printd("Entering advance");
+    //printd("Entering advance");
     state->lex_index++;
 
     if (state->lex_index < state->char_count)
@@ -233,7 +252,7 @@ void advance(LexState * state)
 
 void identify_single_comment(LexState * state){
     //consume character units from lexState index until newline is eaten, increment lex_state each time
-    printd("Entering single comments");
+    //printd("Entering single comments");
     while(state -> lex_index < state -> char_count)
     {
         if( state -> current.codepoint != NEWLINE && 
@@ -245,7 +264,7 @@ void identify_single_comment(LexState * state){
         } else {
             state -> col = 1;
             state -> row++;
-            printf("Finished single line comment, current lex_index: %d\n", state -> lex_index);
+            //printf("Finished single line comment, current lex_index: %d\n", state -> lex_index);
             advance(state);
             break;
         }
@@ -270,7 +289,7 @@ void identify_multi_comment(LexState * state){
             }
         } else {
             state -> col += 2;
-            printf("Finished multi line comment, current lex_index: %d\n", state -> lex_index);
+            //printf("Finished multi line comment, current lex_index: %d\n", state -> lex_index);
             advance(state);
             advance(state);
             break;
@@ -279,7 +298,7 @@ void identify_multi_comment(LexState * state){
 }
 
 void identify_ID(LexState *state){
-    printd("\nEntering identify ID\n");
+    //printd("\nEntering identify ID\n");
 
     char buf[MAXLEXSIZE];
     int len = 0;
@@ -376,11 +395,11 @@ void identify_ID(LexState *state){
 
     append_lexeme(state, buf);
 
-    printd("ID append_lexeme complete");
+    //printd("ID append_lexeme complete");
 }
 
 void identify_string(LexState * state){
-    printd("Entering identify string");
+    //printd("Entering identify string");
 
     char buf[MAXLEXSIZE];
     int len = 0;
@@ -394,7 +413,7 @@ void identify_string(LexState * state){
         // EOF before closing quote
         if (state->lex_index >= state->char_count)
         {
-            printd("Error: unterminated string at EOF");
+            //printd("Error: unterminated string at EOF");
             break;
         }
 
@@ -402,7 +421,7 @@ void identify_string(LexState * state){
         if (state->current.codepoint == NEWLINE ||
             state->current.codepoint == CARRIAGE_RETURN)
         {
-            printd("Error: unterminated string before newline");
+            //printd("Error: unterminated string before newline");
             break;
         }
 
@@ -424,41 +443,30 @@ void identify_string(LexState * state){
 
 void identify_number(LexState *state)
 {
-    printd("Entering identify number");
+    //printd("Entering identify number");
 
     char buf[MAXLEXSIZE];
     int len = 0;
 
-    printf(
-        "NUMBER START -> lex_index=%d codepoint=%d '%c'\n",
-        state->lex_index,
-        state->current.codepoint,
-        (char)state->current.codepoint
-    );
+
 
     // HARD GUARD: number must start with digit
     if (!(state->current.codepoint >= '0' && state->current.codepoint <= '9'))
     {
-        printd("NUMBER ERROR -> first character is not a digit, aborting");
+        //printd("NUMBER ERROR -> first character is not a digit, aborting");
         return;
     }
 
     while (state->lex_index < state->char_count)
     {
-        printf(
-            "NUMBER LOOP -> lex_index=%d codepoint=%d '%c' len=%d\n",
-            state->lex_index,
-            state->current.codepoint,
-            (char)state->current.codepoint,
-            len
-        );
+
 
         // digits are always accepted
         if (state->current.codepoint >= '0' &&
             state->current.codepoint <= '9')
         {
             append_character(buf, &len, state->current);
-            printd("NUMBER appended digit");
+            //printd("NUMBER appended digit");
             advance(state);
             continue;
         }
@@ -467,57 +475,33 @@ void identify_number(LexState *state)
         if (state->current.codepoint == '.')
         {
             append_character(buf, &len, state->current);
-            printd("NUMBER appended decimal point");
+            //printd("NUMBER appended decimal point");
             advance(state);
             continue;
         }
 
         // anything else ends the number
-        printd("NUMBER terminating on non-numeric character");
+        //printd("NUMBER terminating on non-numeric character");
         break;
     }
 
     buf[len] = '\0';
 
-    printf("NUMBER FINAL BUFFER -> \"%s\"\n", buf);
-    printf(
-        "NUMBER END -> lex_index=%d current_codepoint=%d\n",
-        state->lex_index,
-        state->current.codepoint
-    );
+    //printf("NUMBER FINAL BUFFER -> \"%s\"\n", buf);
+
 
     append_lexeme(state, buf);
 }
 
-void identify_delimiter(LexState * state)
+void identify_delimiter(LexState *state)
 {
-    printd("Entering identify delimiter");
-
     char buf[MAXLEXSIZE];
     int len = 0;
 
-    printf(
-        "DELIMITER START -> lex_index=%d codepoint=%d '%c'\n",
-        state->lex_index,
-        state->current.codepoint,
-        (state->current.codepoint >= 32 && state->current.codepoint < 127)
-            ? (char)state->current.codepoint
-            : '?'
-    );
-
-    printd("DELIMITER appending character");
     append_character(buf, &len, state->current);
-
-    printd("DELIMITER advancing");
     advance(state);
 
     buf[len] = '\0';
-
-    printf("DELIMITER FINAL BUFFER -> \"%s\"\n", buf);
-    printf("DELIMITER END -> lex_index=%d current_codepoint=%d\n",
-           state->lex_index,
-           state->current.codepoint);
-
     append_lexeme(state, buf);
 }
 
@@ -532,18 +516,12 @@ void append_character(char *buf, int *len, CharacterUnit cu)
     }
 }
 
-void append_lexeme(LexState * state, char * buf)
+void append_lexeme(LexState *state, char *buf)
 {
-    printd("Entering append_lexeme");
-
-
-    /* FIX: allocate if storage does not exist */
     if (state->lexemes == NULL ||
         state->lexeme_row == NULL ||
         state->lexeme_col == NULL)
     {
-        //printd("append_lexeme -> storage uninitialized, allocating");
-
         size_t new_cap = (state->lexeme_capacity == 0) ? 8 : state->lexeme_capacity;
 
         state->lexemes    = malloc(new_cap * sizeof(char *));
@@ -558,13 +536,9 @@ void append_lexeme(LexState * state, char * buf)
 
         state->lexeme_capacity = new_cap;
     }
-    /* grow if needed */
     else if (state->lexeme_count >= state->lexeme_capacity)
     {
-        //printd("append_lexeme -> growing storage");
-
         size_t new_cap = state->lexeme_capacity * 2;
-        //printf("append_lexeme -> new_cap=%zu\n", new_cap);
 
         char **new_lexemes = realloc(state->lexemes, new_cap * sizeof(char *));
         int  *new_rows     = realloc(state->lexeme_row, new_cap * sizeof(int));
@@ -576,24 +550,14 @@ void append_lexeme(LexState * state, char * buf)
             exit(1);
         }
 
-        state->lexemes        = new_lexemes;
-        state->lexeme_row     = new_rows;
-        state->lexeme_col     = new_cols;
+        state->lexemes         = new_lexemes;
+        state->lexeme_row      = new_rows;
+        state->lexeme_col      = new_cols;
         state->lexeme_capacity = new_cap;
     }
-    else
-    {
-        //printd("append_lexeme -> no resize needed");
-    }
-
-    //printd("append_lexeme -> duplicating lexeme");
-    //printf("append_lexeme -> buf=\"%s\"\n", buf);
 
     size_t len = strlen(buf);
-    //printf("append_lexeme -> strlen(buf)=%zu\n", len);
-
     char *copy = malloc(len + 1);
-    //printf("append_lexeme -> malloc copy=%p\n", (void*)copy);
 
     if (!copy)
     {
@@ -603,19 +567,110 @@ void append_lexeme(LexState * state, char * buf)
 
     memcpy(copy, buf, len + 1);
 
-    //printd("append_lexeme -> storing lexeme pointer");
-    //printf("append_lexeme -> storing at index %d\n", state->lexeme_count);
-
-    state->lexemes[state->lexeme_count] = copy;
+    state->lexemes[state->lexeme_count]    = copy;
     state->lexeme_row[state->lexeme_count] = state->row;
     state->lexeme_col[state->lexeme_count] = state->col;
 
     state->lexeme_count++;
+}
 
-    //printd("append_lexeme -> completed successfully");
+void init_lex_resolve(LexState *state)
+{
+    state->token_capacity = 16;
+    state->token_count    = 0;
+
+    state->tokens = malloc(state->token_capacity * sizeof(TokenBuffer));
+
+    if (!state->tokens)
+    {
+        fprintf(stderr, "Fatal: failed to allocate token storage\n");
+        exit(1);
+    }
+
+    // Defensive initialization
+    for (int i = 0; i < state->token_capacity; i++)
+    {
+        state->tokens[i].token  = TOK_ERROR;
+        state->tokens[i].kind   = 0;
+        state->tokens[i].row    = -1;
+        state->tokens[i].col    = -1;
+        state->tokens[i].lexeme = NULL;
+    }
 }
 
 
+void append_token(LexState *state, TokenType tok, int row, int col)
+{
+    // ensure capacity
+    if (state->token_count >= state->token_capacity)
+    {
+        state->token_capacity =
+            (state->token_capacity == 0) ? 16 : state->token_capacity * 2;
 
+        state->tokens = realloc(
+            state->tokens,
+            state->token_capacity * sizeof(TokenBuffer)
+        );
+
+        if (!state->tokens)
+        {
+            fprintf(stderr, "Fatal: token realloc failed\n");
+            exit(1);
+        }
+    }
+
+    // store token
+    state->tokens[state->token_count].token  = tok;
+    state->tokens[state->token_count].row    = row;
+    state->tokens[state->token_count].col    = col;
+
+    // optional: fill later during resolve
+    state->tokens[state->token_count].kind   = 0;
+    state->tokens[state->token_count].lexeme = NULL;
+
+    state->token_count++;
+}
+
+void lex_resolve(LexState *state)
+{
+    for (int i = 0; i < state->lexeme_count; i++)
+    {
+        char *lex = state->lexemes[i];
+        int   row = state->lexeme_row[i];
+        int   col = state->lexeme_col[i];
+
+        // -----------------------------------------
+        // Composite keyword check
+        // -----------------------------------------
+        if (i + 1 < state->lexeme_count)
+        {
+            TokenType pair =
+                lookup_pair(lex, state->lexemes[i + 1]);
+
+            if (pair != TOK_ERROR)
+            {
+                append_token(state, pair, row, col);
+                i++; // consume second lexeme
+                continue;
+            }
+        }
+
+        // -----------------------------------------
+        // Single lexeme resolution
+        // -----------------------------------------
+        TokenType tok = lookup(lex);
+        append_token(state, tok, row, col);
+    }
+
+    // -----------------------------------------
+    // EOF sentinel
+    // -----------------------------------------
+    append_token(
+        state,
+        TOK_EOF,
+        state->lexeme_row[state->lexeme_count - 1],
+        state->lexeme_col[state->lexeme_count - 1]
+    );
+}
 
 

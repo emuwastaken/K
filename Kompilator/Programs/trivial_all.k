@@ -1,6 +1,7 @@
 "string"
 "str"
 IDENTIFIER
+ÅTERVÄND
 //lmao
 /%LMAO%/
 ; : / * - ?

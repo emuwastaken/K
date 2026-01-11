@@ -23,12 +23,12 @@ typedef struct TokenBuffer {
 
 typedef struct LexState {
 
-    char **lexemes;                 //Stores all lexemes
+    char ** lexemes;                 //Stores all lexemes
     char * current_lexeme;
     int current_lexeme_len;
 
-    int  *lexeme_row;               //Stores the row    of all stored lexemes
-    int  *lexeme_col;               //Stores the column of all stored lexemes
+    int  * lexeme_row;               //Stores the row    of all stored lexemes
+    int  * lexeme_col;               //Stores the column of all stored lexemes
 
     int lexeme_count;               //Amount of lexemes
     int lexeme_capacity;            //Amount of lexemes allowed before dynamic reallocation
@@ -36,6 +36,8 @@ typedef struct LexState {
     TokenBuffer *tokens;            //Stores all resolved lexemes as tokens
     int token_count;                //Amount of tokens (!= lexeme_count, double keywords are 1 token but two lexemes)
     int token_capacity;             //Amount of tokens allowed before dynamic reallocation
+    int * token_row;
+    int * token_col;
 
     CharacterUnit *char_stream;     //List of all characters with codepoint, byte length and individual bytes stored
     int char_count;                 //Amount of characters
@@ -52,8 +54,14 @@ typedef struct LexState {
 void lexer(
     CharacterUnit *decode_buffer,
     int char_count,
-    TokenBuffer **out_tokens,   
-    int *out_token_count
+
+    TokenBuffer **out_tokens,
+    int *out_token_count,
+
+    char ***out_lexemes,
+    int *out_lexeme_count,
+    int **out_lexeme_cols,
+    int **out_lexeme_rows
 );
 
 void init_lex_state(LexState * state, int char_count, CharacterUnit * decode_buffer);
