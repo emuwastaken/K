@@ -1,6 +1,6 @@
 HEL ENTRE()
 <
-    FÖR(HEL: a,0; a STÖLIK 10; a: a + 1)<
+    FÖR(HEL: a,0; a LIKA 10; a: a + 1)<
 
     >
 

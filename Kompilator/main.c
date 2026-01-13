@@ -5,6 +5,7 @@
 
 #include "helper.h"
 #include "lexer.h"
+#include "parser.h"
 #include "utf_decoder.h"
 #include "tokenkeytab.h"
 
@@ -89,6 +90,19 @@ int main(int argc, char *argv[])
     {
         printf("Token %d: %s\n", i, tok2name(token_buffer[i].token));
     }
+
+
+    int parse_error_count = 0;
+
+    parser(
+        token_buffer,
+        token_count,
+        lexemes,
+        &parse_error_count
+    );
+
+    printf("\nParser finished with %d error(s)\n", parse_error_count);
+
 
     /* -----------------------------
        Cleanup
