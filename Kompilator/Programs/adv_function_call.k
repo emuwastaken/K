@@ -6,7 +6,7 @@ TOM BERÄKNA(HEL PEK: a, HEL PEK: b)<
     ÅTERVÄND;
 >
 
-HEL HUVUDENTRE()<
+HEL ENTRE()<
 
     HEL: x, 5;
     HEL: y, 8;

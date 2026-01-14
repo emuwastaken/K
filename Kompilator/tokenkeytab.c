@@ -11,7 +11,7 @@ const Keyword keywords[] = {
     /* Structure */
     { "PROGRAM",     TOK_PROGRAM },
     { "FÖRFATTARE",  TOK_FORFATTARE },
-    { "ENTRE",       TOK_ENTRE },
+    //{ "ENTRE",       TOK_ENTRE },
 
     /* Types */
     { "HEL",         TOK_HEL },
@@ -26,6 +26,13 @@ const Keyword keywords[] = {
     { "FÄLT",        TOK_FALT },
     { "TOM",         TOK_TOM },
     { "TYPDEF",      TOK_TYPDEF},
+
+    /* Arithmetic operators */
+    { "+",           TOK_PLUS },
+    { "-",           TOK_MINUS },
+    { "*",           TOK_MUL },
+    { "/",           TOK_DIV },
+
 
     /* Delimiters */
     { "(",           TOK_LPAREN },
@@ -145,7 +152,7 @@ const char * tok2name(TokenType tok)
     {
         case TOK_PROGRAM:        return "TOK_PROGRAM";
         case TOK_FORFATTARE:     return "TOK_FORFATTARE";
-        case TOK_ENTRE:          return "TOK_ENTRE";
+        //case TOK_ENTRE:          return "TOK_ENTRE";
         case TOK_HEL:            return "TOK_HEL";
         case TOK_FLYT:           return "TOK_FLYT";
         case TOK_BOK:            return "TOK_BOK";
@@ -228,7 +235,7 @@ const char * tok2lexeme(TokenType tok)
         /* Structure */
         case TOK_PROGRAM:        return "PROGRAM";
         case TOK_FORFATTARE:     return "FÖRFATTARE";
-        case TOK_ENTRE:          return "ENTRE";
+        //case TOK_ENTRE:          return "ENTRE";
 
         /* Types */
         case TOK_HEL:            return "HEL";

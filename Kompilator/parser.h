@@ -124,7 +124,7 @@ void field_access(ParState *state);
 --------------------------------------------- */
 void function_call(ParState *state);
 void argument_list(ParState *state);
-
+void function_call_statement(ParState * state);
 
 /* ---------------------------------------------
    Parser utilities

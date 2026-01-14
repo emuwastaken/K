@@ -6,7 +6,7 @@ typedef enum TokenType {
     // Structure
     TOK_PROGRAM = 200,
     TOK_FORFATTARE,
-    TOK_ENTRE,
+    //TOK_ENTRE,
 
     // Types
     TOK_HEL,

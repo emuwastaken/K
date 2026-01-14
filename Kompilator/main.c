@@ -79,18 +79,21 @@ int main(int argc, char *argv[])
         &lexeme_col
     );
     
-    /* Display lexemes */
+    /*
+
+
     for (int i = 0; i < lexeme_count; i++)
     {
         printf("Lexeme %d: %s (row: %d, col: %d)\n", i, lexemes[i], lexeme_row[i], lexeme_col[i]);
     }
 
-    /* Display token buffer */
+
     for (int i = 0; i < token_count; i++)
     {
         printf("Token %d: %s\n", i, tok2name(token_buffer[i].token));
     }
 
+    */
 
     int parse_error_count = 0;
 

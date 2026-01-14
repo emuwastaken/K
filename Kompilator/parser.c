@@ -207,6 +207,23 @@ void sync_to_follow(ParState *state)
 }
 
 
+// Reports a syntax error at the current token location
+static void syntax_error_at(ParState *state, const char *msg)
+{
+    state->error_count++;
+    state->panic_mode = 1;
+
+    printf(
+        "Syntax error at %d:%d: %s (got %s)\n",
+        state->tokens[state->index].row,
+        state->tokens[state->index].col,
+        msg,
+        tok2name(state->next)
+    );
+}
+
+
+
 //Program structure
 void program(ParState *state)
 {
@@ -250,6 +267,7 @@ void global_statement_list(ParState *state)
 }
 
 
+
 void global_statement(ParState *state)
 {
     const TokenType *saved_sync;
@@ -259,7 +277,6 @@ void global_statement(ParState *state)
     saved_sync = state->sync_set;
     state->sync_set = FOLLOW_global_statement;
 
-    /* FIRST(global_statement) */
     switch (state->next)
     {
         case TOK_TYPDEF:
@@ -275,31 +292,66 @@ void global_statement(ParState *state)
         case TOK_BYTE:
         case TOK_ORD:
         case TOK_VAL:
-        case TOK_IDENTIFIER:
-            /* LL(2) disambiguation */
-            if (state->next_next == TOK_LPAREN)
-                function_declaration(state);
-            else
-                declaration_statement(state);
+        case TOK_TOM:
+        {
+            //must be: <type> <identifier> ...
+            if (state->next_next != TOK_IDENTIFIER)
+            {
+                int start_index = state->index;
+
+                syntax_error_at(state, "expected identifier after type specifier");
+                sync_to_follow(state);
+
+                //forces progress if sync didn't move
+                if (state->index == start_index && state->next != TOK_EOF)
+                    next_token(state);
+
+                break;
+            }
+
+            //looks one past identifier: '(' => function, ':' => declaration
+            {
+                TokenType after_id = state->tokens[state->index + 2].token;
+
+                if (after_id == TOK_LPAREN)
+                    function_declaration(state);
+                else if (after_id == TOK_ASSIGN)
+                    declaration_statement(state);
+                else
+                {
+                    int start_index = state->index;
+
+                    syntax_error_at(state, "expected '(' or ':' after identifier");
+                    sync_to_follow(state);
+
+                    //forces progress if sync didn't move
+                    if (state->index == start_index && state->next != TOK_EOF)
+                        next_token(state);
+                }
+            }
+
             break;
+        }
 
         default:
-            /* extra symbol */
-            state->error_count++;
-            state->panic_mode = 1;
+        {
+            int start_index = state->index;
 
-            printf("Syntax error: unexpected token %s in global scope\n",
-                   tok2name(state->next));
-
+            syntax_error_at(state, "unexpected token in global scope");
             sync_to_follow(state);
+
+            //forces progress if sync didn't move
+            if (state->index == start_index && state->next != TOK_EOF)
+                next_token(state);
+
             break;
+        }
     }
 
     state->sync_set = saved_sync;
 
     printf("[EXIT ] global_statement\n");
 }
-
 
 
 
@@ -323,14 +375,11 @@ void function_declaration(ParState *state)
     }
     else
     {
-        state->error_count++;
-        state->panic_mode = 1;
-
-        printf("Syntax error: expected function name, got %s\n",
-               tok2name(state->next));
+        syntax_error_at(state, "expected function name");
 
         sync_to_follow(state);
         state->sync_set = saved_sync;
+
         printf("[EXIT ] function_declaration\n");
         return;
     }
@@ -352,6 +401,14 @@ void function_declaration(ParState *state)
     printf("[EXIT ] function_declaration\n");
 }
 
+// ---------------------------------------------------
+// Parses a declaration statement
+// Pre: state->next begins a type specifier
+// Post: consumes a full declaration statement
+// ---------------------------------------------------
+
+
+
 
 void declaration_statement(ParState *state)
 {
@@ -360,80 +417,92 @@ void declaration_statement(ParState *state)
     printf("[ENTER] declaration_statement\n");
 
     saved_sync = state->sync_set;
-    state->sync_set = FOLLOW_statement;
 
-    /* type */
+    //parses the type part
     type_specifier(state);
 
-    /* ':' */
-    match(state, TOK_ASSIGN);
-
-    /* first decl_item */
-    if (state->next == TOK_IDENTIFIER)
+    //expects ':'
+    if (state->next != TOK_ASSIGN)
     {
-        /* ID */
-        match(state, TOK_IDENTIFIER);
-
-        /* optional initializer */
-        if (state->next == TOK_ASSIGN)
-        {
-            match(state, TOK_ASSIGN);
-            initializer(state);
-        }
+        syntax_error_at(state, "expected ':' in declaration");
+        goto recover;
     }
-    else
+    next_token(state);
+
+    //expects an identifier
+    if (state->next != TOK_IDENTIFIER)
     {
-        state->error_count++;
-        state->panic_mode = 1;
+        syntax_error_at(state, "expected identifier in declaration");
+        goto recover;
+    }
+    next_token(state);
 
-        printf("Syntax error: expected identifier in declaration\n");
-        sync_to_follow(state);
-
+    //allows either ';' or ', <expr> ;'
+    if (state->next == TOK_SEMI)
+    {
+        next_token(state);
         state->sync_set = saved_sync;
         printf("[EXIT ] declaration_statement\n");
         return;
     }
 
-    /* additional decl_items */
-    while (state->next == TOK_COMMA)
+    //initializer branch
+    if (state->next != TOK_COMMA)
     {
-        match(state, TOK_COMMA);
-
-        if (state->next == TOK_IDENTIFIER)
-        {
-            match(state, TOK_IDENTIFIER);
-
-            if (state->next == TOK_ASSIGN)
-            {
-                match(state, TOK_ASSIGN);
-                initializer(state);
-            }
-        }
-        else
-        {
-            state->error_count++;
-            state->panic_mode = 1;
-
-            printf("Syntax error: expected identifier after ',' in declaration\n");
-            sync_to_follow(state);
-            break;
-        }
+        syntax_error_at(state, "expected ';' or ',' after identifier in declaration");
+        goto recover;
     }
+    next_token(state);
 
-    /* ';' */
-    match(state, TOK_SEMI);
+    //parses initializer expression
+    expression(state);
+
+    //expects ';' at end
+    if (state->next != TOK_SEMI)
+    {
+        syntax_error_at(state, "expected ';' after declaration");
+        goto recover;
+    }
+    next_token(state);
 
     state->sync_set = saved_sync;
+    printf("[EXIT ] declaration_statement\n");
+    return;
 
+recover:
+    //skips to a safe boundary for declarations
+    while (state->next != TOK_SEMI &&
+           state->next != TOK_RBLOCK &&
+           state->next != TOK_EOF)
+    {
+        next_token(state);
+    }
+
+    //consumes the statement terminator if present
+    if (state->next == TOK_SEMI)
+        next_token(state);
+
+    state->sync_set = saved_sync;
     printf("[EXIT ] declaration_statement\n");
 }
 
+// ---------------------------------------------------
+// Parses an optional array type suffix: '<' expression '>'
+// Pre: next may be TOK_LBLOCK  Post: consumed suffix if present
+// ---------------------------------------------------
+static void optional_type_array_suffix(ParState *state)
+{
+    // consumes '<expr>' when used as a suffix on a type
+    if (state->next == TOK_LBLOCK)
+    {
+        match(state, TOK_LBLOCK);
+        expression(state);
+        match(state, TOK_RBLOCK);
+    }
+}
 
-// ---------------------------------------------------
-// Parses a typedef declaration
-// Pre: TOK_TYPDEF
-// Post: typedef declaration consumed
-// ---------------------------------------------------
+
+
 void typedef_declaration(ParState *state)
 {
     printf("[ENTER] typedef_declaration\n");
@@ -444,6 +513,7 @@ void typedef_declaration(ParState *state)
     {
         match(state, TOK_STRUKTUR);
 
+        // struct name
         if (state->next == TOK_IDENTIFIER)
             match(state, TOK_IDENTIFIER);
         else
@@ -457,12 +527,27 @@ void typedef_declaration(ParState *state)
 
         match(state, TOK_LBLOCK);
 
-        /* struct_field_list */
+        // -------------------------------------------
+        // struct field list:
+        //   type_specifier [ '<' expr '>' ] ':' ID [ '<' expr '>' ] ';'
+        // -------------------------------------------
         while (state->next != TOK_RBLOCK && state->next != TOK_EOF)
         {
+            // field type
             type_specifier(state);
+
+            // optional array suffix on the type: person<2>: föräldrar;
+            if (state->next == TOK_LBLOCK)
+            {
+                match(state, TOK_LBLOCK);
+                expression(state);
+                match(state, TOK_RBLOCK);
+            }
+
+            // ':'
             match(state, TOK_ASSIGN);
 
+            // field name
             if (state->next == TOK_IDENTIFIER)
                 match(state, TOK_IDENTIFIER);
             else
@@ -473,7 +558,7 @@ void typedef_declaration(ParState *state)
                 break;
             }
 
-            /* optional array suffix */
+            // optional array suffix on the field name (keep if you want both forms)
             if (state->next == TOK_LBLOCK)
             {
                 match(state, TOK_LBLOCK);
@@ -488,7 +573,7 @@ void typedef_declaration(ParState *state)
     }
     else
     {
-        /* TYPDEF <type> ID ; */
+        // TYPDEF <type> ID ;
         type_specifier(state);
 
         if (state->next == TOK_IDENTIFIER)
@@ -506,40 +591,38 @@ void typedef_declaration(ParState *state)
     printf("[EXIT ] typedef_declaration\n");
 }
 
+
+// Parses a standalone STRUKTUR declaration and its field list
 void struct_declaration(ParState *state)
 {
     printf("[ENTER] struct_declaration\n");
 
+    // consumes STRUKTUR
     match(state, TOK_STRUKTUR);
 
+    // consumes struct name
     if (state->next == TOK_IDENTIFIER)
+    {
         match(state, TOK_IDENTIFIER);
+    }
     else
     {
-        state->error_count++;
-        printf("Syntax error: expected struct name\n");
+        syntax_error_at(state, "expected struct name");
         sync_to_follow(state);
         printf("[EXIT ] struct_declaration\n");
         return;
     }
 
+    // consumes '<'
     match(state, TOK_LBLOCK);
 
+    // parses zero or more fields until '>' or EOF
     while (state->next != TOK_RBLOCK && state->next != TOK_EOF)
     {
+        // parses the field type
         type_specifier(state);
-        match(state, TOK_ASSIGN);
 
-        if (state->next == TOK_IDENTIFIER)
-            match(state, TOK_IDENTIFIER);
-        else
-        {
-            state->error_count++;
-            printf("Syntax error: expected field name\n");
-            sync_to_follow(state);
-            break;
-        }
-
+        // optional type-array suffix: person<2>: föräldrar;
         if (state->next == TOK_LBLOCK)
         {
             match(state, TOK_LBLOCK);
@@ -547,9 +630,34 @@ void struct_declaration(ParState *state)
             match(state, TOK_RBLOCK);
         }
 
+        // consumes ':'
+        match(state, TOK_ASSIGN);
+
+        // parses field name
+        if (state->next == TOK_IDENTIFIER)
+        {
+            match(state, TOK_IDENTIFIER);
+        }
+        else
+        {
+            syntax_error_at(state, "expected field name");
+            sync_to_follow(state);
+            break;
+        }
+
+        // optional field-array suffix (keep it if you want arrays after field names too)
+        if (state->next == TOK_LBLOCK)
+        {
+            match(state, TOK_LBLOCK);
+            expression(state);
+            match(state, TOK_RBLOCK);
+        }
+
+        // consumes ';'
         match(state, TOK_SEMI);
     }
 
+    // consumes '>'
     match(state, TOK_RBLOCK);
 
     printf("[EXIT ] struct_declaration\n");
@@ -618,11 +726,10 @@ void type_declaration(ParState *state)
             break;
 
         default:
-            state->error_count++;
-            state->panic_mode = 1;
-
-            printf("Syntax error: unexpected token %s in type declaration\n",
-                   tok2name(state->next));
+            syntax_error_at(
+                state,
+                "unexpected token in type declaration"
+            );
 
             sync_to_follow(state);
             break;
@@ -652,6 +759,8 @@ void type_specifier(ParState *state)
         case TOK_HALV:
         case TOK_BYTE:
         case TOK_ORD:
+        case TOK_VAL:
+        case TOK_TOM:          /* <-- ADD THIS */
         case TOK_IDENTIFIER:
             next_token(state);
             break;
@@ -660,7 +769,9 @@ void type_specifier(ParState *state)
             state->error_count++;
             state->panic_mode = 1;
 
-            printf("Syntax error: expected type, got %s\n",
+            printf("Syntax error at %d:%d: expected type, got %s\n",
+                   state->tokens[state->index].row,
+                   state->tokens[state->index].col,
                    tok2name(state->next));
 
             sync_to_follow(state);
@@ -670,15 +781,12 @@ void type_specifier(ParState *state)
     }
 
     while (state->next == TOK_PEK)
-    {
         next_token(state);
-    }
 
     state->sync_set = saved_sync;
 
     printf("[EXIT ] type_specifier\n");
 }
-
 
 
 void parameter_list(ParState *state)
@@ -708,6 +816,10 @@ void parameter_list(ParState *state)
 
 
 
+// ---------------------------------------------------
+// Parses a single parameter: <type_specifier> ':' ID
+// Pre: next is at start of parameter  Post: consumed one parameter (or recovered)
+// ---------------------------------------------------
 void parameter(ParState *state)
 {
     const TokenType *saved_sync;
@@ -717,8 +829,31 @@ void parameter(ParState *state)
     saved_sync = state->sync_set;
     state->sync_set = FOLLOW_parameter;
 
+    // parse the type (includes optional PEK chain)
     type_specifier(state);
 
+    // consume ':' between type and parameter name
+    if (state->next == TOK_ASSIGN)
+    {
+        match(state, TOK_ASSIGN);
+    }
+    else
+    {
+        state->error_count++;
+        state->panic_mode = 1;
+
+        printf("Syntax error at %d:%d: expected ':' after parameter type (got %s)\n",
+               state->tokens[state->index].row,
+               state->tokens[state->index].col,
+               tok2name(state->next));
+
+        sync_to_follow(state);
+        state->sync_set = saved_sync;
+        printf("[EXIT ] parameter\n");
+        return;
+    }
+
+    // parse the parameter name
     if (state->next == TOK_IDENTIFIER)
     {
         match(state, TOK_IDENTIFIER);
@@ -728,7 +863,9 @@ void parameter(ParState *state)
         state->error_count++;
         state->panic_mode = 1;
 
-        printf("Syntax error: expected parameter name, got %s\n",
+        printf("Syntax error at %d:%d: expected parameter name (got %s)\n",
+               state->tokens[state->index].row,
+               state->tokens[state->index].col,
                tok2name(state->next));
 
         sync_to_follow(state);
@@ -795,6 +932,10 @@ void statement_list(ParState *state)
 
 
 
+// ---------------------------------------------------
+// Dispatches a statement based on lookahead
+// Pre: next is at start of a statement  Post: consumed one statement (or recovered)
+// ---------------------------------------------------
 void statement(ParState *state)
 {
     const TokenType *saved_sync;
@@ -806,9 +947,7 @@ void statement(ParState *state)
 
     switch (state->next)
     {
-        /* --------------------
-           Declarations
-        -------------------- */
+        // declarations starting with built-in type keywords
         case TOK_HEL:
         case TOK_FLYT:
         case TOK_BOK:
@@ -821,9 +960,7 @@ void statement(ParState *state)
             declaration_statement(state);
             break;
 
-        /* --------------------
-           Control / flow
-        -------------------- */
+        // control / flow
         case TOK_ATERVAND:
             return_statement(state);
             break;
@@ -846,20 +983,38 @@ void statement(ParState *state)
             loop_statement(state);
             break;
 
-        /* --------------------
-           Field-based statements
-        -------------------- */
+        // field statement
         case TOK_FALT:
             field_statement(state);
             break;
 
-        /* --------------------
-           ID-based (LL(2))
-        -------------------- */
+        // ------------------------------------------------
+        // TOK_IDENTIFIER can be either:
+        // - type-led declaration (typedef type)
+        // - assignment/expression
+        // ------------------------------------------------
         case TOK_IDENTIFIER:
+        {
+            // declaration heuristic: TypeName ':' VarName (',' | ';')
+            if (state->next_next == TOK_ASSIGN)
+            {
+                TokenType t2 = state->tokens[state->index + 2].token;
+                TokenType t3 = state->tokens[state->index + 3].token;
+
+                // if it looks like: ID ':' ID ','  OR  ID ':' ID ';'
+                if (t2 == TOK_IDENTIFIER && (t3 == TOK_COMMA || t3 == TOK_SEMI))
+                {
+                    declaration_statement(state);
+                    break;
+                }
+            }
+
+            // otherwise treat as assignment / expression as before
             if (state->next_next == TOK_ASSIGN ||
                 state->next_next == TOK_OKAR ||
-                state->next_next == TOK_MINSKAR)
+                state->next_next == TOK_MINSKAR ||
+                state->next_next == TOK_PLUS_ASSIGN ||
+                state->next_next == TOK_MINUS_ASSIGN)
             {
                 assignment_statement(state);
             }
@@ -868,8 +1023,9 @@ void statement(ParState *state)
                 expression_statement(state);
             }
             break;
+        }
 
-        //Expression starters
+        // expression starters
         case TOK_STRING_LIT:
         case TOK_INT_LIT:
         case TOK_FLOAT_LIT:
@@ -880,12 +1036,13 @@ void statement(ParState *state)
             expression_statement(state);
             break;
 
-        //Error
         default:
             state->error_count++;
             state->panic_mode = 1;
 
-            printf("Syntax error: unexpected token %s in statement\n",
+            printf("Syntax error at %d:%d: unexpected token in statement (got %s)\n",
+                   state->tokens[state->index].row,
+                   state->tokens[state->index].col,
                    tok2name(state->next));
 
             sync_to_follow(state);
@@ -896,7 +1053,6 @@ void statement(ParState *state)
 
     printf("[EXIT ] statement\n");
 }
-
 
 void break_statement(ParState *state)
 {
@@ -912,10 +1068,30 @@ void lvalue(ParState *state)
 {
     printf("[ENTER] lvalue\n");
 
+    //deref lvalue: VÄRDE VID <identifier>
+    if (state->next == TOK_DEREF)
+    {
+        match(state, TOK_DEREF);
+
+        //expects identifier after deref
+        if (state->next == TOK_IDENTIFIER)
+            match(state, TOK_IDENTIFIER);
+        else
+        {
+            syntax_error_at(state, "expected identifier after VÄRDE VID");
+            sync_to_follow(state);
+        }
+
+        printf("[EXIT ] lvalue\n");
+        return;
+    }
+
+    //field lvalue
     if (state->next == TOK_FALT)
     {
         field_access(state);
     }
+    //identifier or array lvalue
     else if (state->next == TOK_IDENTIFIER)
     {
         if (state->next_next == TOK_LBLOCK)
@@ -925,16 +1101,14 @@ void lvalue(ParState *state)
     }
     else
     {
-        state->error_count++;
-        printf("Syntax error: expected lvalue, got %s\n",
-               tok2name(state->next));
+        syntax_error_at(state, "expected lvalue");
         sync_to_follow(state);
     }
 
     printf("[EXIT ] lvalue\n");
 }
 
-
+//continue here
 void array_access(ParState *state)
 {
     printf("[ENTER] array_access\n");
@@ -955,8 +1129,8 @@ void field_access(ParState *state)
 
     if (state->next != TOK_IDENTIFIER)
     {
-        state->error_count++;
-        printf("Syntax error: expected identifier after FÄLT\n");
+        syntax_error_at(state, "expected identifier after FÄLT");
+
         sync_to_follow(state);
         printf("[EXIT ] field_access\n");
         return;
@@ -1004,26 +1178,103 @@ void assignment_statement(ParState *state)
 
 void return_statement(ParState *state)
 {
+    const TokenType *saved_sync;
+
     printf("[ENTER] return_statement\n");
-    /* stub */
+
+    saved_sync = state->sync_set;
+    state->sync_set = FOLLOW_statement;
+
+    /* 'ÅTERVÄND' */
+    match(state, TOK_ATERVAND);
+
+    /* optional return expression */
+    if (state->next != TOK_SEMI)
+    {
+        expression(state);
+    }
+
+    /* ';' */
+    match(state, TOK_SEMI);
+
+    state->sync_set = saved_sync;
+
     printf("[EXIT ] return_statement\n");
 }
 
 
 void expression_statement(ParState *state)
 {
+    const TokenType *saved_sync;
+
     printf("[ENTER] expression_statement\n");
-    /* stub */
+
+    saved_sync = state->sync_set;
+    state->sync_set = FOLLOW_statement;
+
+    /* expression */
+    expression(state);
+
+    /* ';' */
+    match(state, TOK_SEMI);
+
+    state->sync_set = saved_sync;
+
     printf("[EXIT ] expression_statement\n");
 }
 
 
 void field_statement(ParState *state)
 {
+    const TokenType *saved_sync;
+
     printf("[ENTER] field_statement\n");
-    /* stub */
+
+    saved_sync = state->sync_set;
+    state->sync_set = FOLLOW_statement;
+
+    /* field access (starts with FÄLT) */
+    field_access(state);
+
+    /* direct assignment: ':' expression */
+    if (state->next == TOK_ASSIGN)   /* ':' */
+    {
+        match(state, TOK_ASSIGN);
+        expression(state);
+    }
+    /* unary update: ÖKAR / MINSKAR */
+    else if (state->next == TOK_OKAR || state->next == TOK_MINSKAR)
+    {
+        match(state, state->next);
+    }
+    /* compound update: ÖKAR MED / MINSKAR MED */
+    else if (state->next == TOK_PLUS_ASSIGN ||
+             state->next == TOK_MINUS_ASSIGN)
+    {
+        match(state, state->next);
+        expression(state);
+    }
+    else
+    {
+        syntax_error_at(
+            state,
+            "expected ':', field update operator, or compound update operator"
+        );
+
+        sync_to_follow(state);
+        state->sync_set = saved_sync;
+        printf("[EXIT ] field_statement\n");
+        return;
+    }
+
+    /* ';' */
+    match(state, TOK_SEMI);
+
+    state->sync_set = saved_sync;
+
     printf("[EXIT ] field_statement\n");
 }
+
 
 
 void if_statement(ParState *state)
@@ -1053,11 +1304,7 @@ void if_statement(ParState *state)
     }
     else
     {
-        state->error_count++;
-        state->panic_mode = 1;
-
-        printf("Syntax error: expected OM, got %s\n",
-               tok2name(state->next));
+        syntax_error_at(state, "expected OM");
 
         sync_to_follow(state);
     }
@@ -1068,7 +1315,7 @@ void if_statement(ParState *state)
 }
 
 
-
+// Parses a switch statement with FALL and optional ANNARS clauses
 void switch_statement(ParState *state)
 {
     const TokenType *saved_sync;
@@ -1078,43 +1325,54 @@ void switch_statement(ParState *state)
     saved_sync = state->sync_set;
     state->sync_set = FOLLOW_statement;
 
-    if (state->next == TOK_VAXEL)
+    if (state->next != TOK_VAXEL)
     {
-        match(state, TOK_VAXEL);
-        match(state, TOK_LPAREN);
-        expression(state);
-        match(state, TOK_RPAREN);
-        match(state, TOK_LBLOCK);
-
-        /* zero or more case clauses */
-        while (state->next == TOK_FALL)
-        {
-            match(state, TOK_FALL);
-            expression(state);
-            match(state, TOK_ASSIGN);
-            statement_list(state);
-        }
-
-        /* optional default clause */
-        if (state->next == TOK_ANNARS)
-        {
-            match(state, TOK_ANNARS);
-            match(state, TOK_ASSIGN);
-            statement_list(state);
-        }
-
-        match(state, TOK_RBLOCK);
-    }
-    else
-    {
-        state->error_count++;
-        state->panic_mode = 1;
-
-        printf("Syntax error: expected VÄXEL, got %s\n",
-               tok2name(state->next));
-
+        syntax_error_at(state, "expected VÄXEL");
         sync_to_follow(state);
+        state->sync_set = saved_sync;
+        printf("[EXIT ] switch_statement\n");
+        return;
     }
+
+    match(state, TOK_VAXEL);
+    match(state, TOK_LPAREN);
+    expression(state);
+    match(state, TOK_RPAREN);
+
+    match(state, TOK_LBLOCK);
+
+    //parses zero or more FALL clauses
+    while (state->next == TOK_FALL)
+    {
+        match(state, TOK_FALL);
+        expression(state);
+        match(state, TOK_ASSIGN);
+
+        //parses statements until next label or end of switch
+        while (state->next != TOK_FALL &&
+               state->next != TOK_ANNARS &&
+               state->next != TOK_RBLOCK &&
+               state->next != TOK_EOF)
+        {
+            statement(state);
+        }
+    }
+
+    //parses optional ANNARS clause
+    if (state->next == TOK_ANNARS)
+    {
+        match(state, TOK_ANNARS);
+        match(state, TOK_ASSIGN);
+
+        //parses statements until end of switch
+        while (state->next != TOK_RBLOCK &&
+               state->next != TOK_EOF)
+        {
+            statement(state);
+        }
+    }
+
+    match(state, TOK_RBLOCK);
 
     state->sync_set = saved_sync;
 
@@ -1148,11 +1406,7 @@ void loop_statement(ParState *state)
             break;
 
         default:
-            state->error_count++;
-            state->panic_mode = 1;
-
-            printf("Syntax error: unexpected token %s in loop statement\n",
-                   tok2name(state->next));
+            syntax_error_at(state, "unexpected token in loop statement");
 
             sync_to_follow(state);
             break;
@@ -1184,11 +1438,7 @@ void while_statement(ParState *state)
     }
     else
     {
-        state->error_count++;
-        state->panic_mode = 1;
-
-        printf("Syntax error: expected MEDAN, got %s\n",
-               tok2name(state->next));
+        syntax_error_at(state, "expected MEDAN");
 
         sync_to_follow(state);
     }
@@ -1221,11 +1471,7 @@ void do_while_statement(ParState *state)
     }
     else
     {
-        state->error_count++;
-        state->panic_mode = 1;
-
-        printf("Syntax error: expected GÖR, got %s\n",
-               tok2name(state->next));
+        syntax_error_at(state, "expected GÖR");
 
         sync_to_follow(state);
     }
@@ -1251,35 +1497,39 @@ void for_statement(ParState *state)
         match(state, TOK_FOR);
         match(state, TOK_LPAREN);
 
-        /* for_init */
+        //parses for_init
         if (state->next != TOK_SEMI)
         {
             if (state->next == TOK_HEL ||
                 state->next == TOK_FLYT ||
-                state->next == TOK_BOK ||
-                state->next == TOK_BIT ||
+                state->next == TOK_BOK  ||
+                state->next == TOK_BIT  ||
                 state->next == TOK_HALV ||
                 state->next == TOK_BYTE ||
-                state->next == TOK_ORD ||
+                state->next == TOK_ORD  ||
                 state->next == TOK_STATISK)
             {
-                /* declaration-style init */
+                //declaration-style init consumes its own ';'
                 declaration_statement(state);
             }
             else
             {
-                /* assignment-style init */
+                //assignment-style init does not consume ';'
                 assignment_core(state);
+                match(state, TOK_SEMI);
             }
         }
+        else
+        {
+            //empty init
+            match(state, TOK_SEMI);
+        }
 
-        match(state, TOK_SEMI);
-
-        /* condition (mandatory) */
+        //parses condition (must end with ';')
         expression(state);
         match(state, TOK_SEMI);
 
-        /* for_update (optional) */
+        //parses update (optional)
         if (state->next != TOK_RPAREN)
         {
             assignment_core(state);
@@ -1303,6 +1553,8 @@ void for_statement(ParState *state)
 
     printf("[EXIT ] for_statement\n");
 }
+
+
 
 void assignment_core(ParState *state)
 {
@@ -1341,12 +1593,9 @@ void assignment_core(ParState *state)
             break;
 
         default:
-            state->error_count++;
-            state->panic_mode = 1;
-
-            printf(
-                "Syntax error: expected assignment operator after lvalue, got %s\n",
-                tok2name(state->next)
+            syntax_error_at(
+                state,
+                "expected assignment operator after lvalue"
             );
 
             sync_to_follow(state);
@@ -1481,7 +1730,56 @@ void multiplicative_expression(ParState *state)
     printf("[EXIT ] multiplicative_expression\n");
 }
 
+// ---------------------------------------------------
+// Checks if token can start a type specifier
+// Pre: token Post: returns 1 if token starts a type, else 0
+// ---------------------------------------------------
+static int is_type_starter(TokenType t)
+{
+    switch (t)
+    {
+        case TOK_HEL:
+        case TOK_FLYT:
+        case TOK_BOK:
+        case TOK_BIT:
+        case TOK_HALV:
+        case TOK_BYTE:
+        case TOK_ORD:
+        case TOK_VAL:
+        case TOK_IDENTIFIER:
+            return 1;
 
+        default:
+            return 0;
+    }
+}
+
+
+
+
+// ---------------------------------------------------
+// Detects if the current position looks like a cast: ( <type_specifier> )
+// Pre: state->index at '(' Post: returns 1 if cast pattern, else 0
+// ---------------------------------------------------
+static int is_cast_start(ParState *state)
+{
+    int i;
+
+    if (state->next != TOK_LPAREN)
+        return 0;
+
+    if (!is_type_starter(state->next_next))
+        return 0;
+
+    // scan: '(' <type> { PEK } ')'
+    i = state->index + 2;
+
+    // consumes the base type token at index+1, now check pointer suffixes
+    while (i < state->token_count && state->tokens[i].token == TOK_PEK)
+        i++;
+
+    return (i < state->token_count && state->tokens[i].token == TOK_RPAREN);
+}
 
 void unary_expression(ParState *state)
 {
@@ -1491,6 +1789,19 @@ void unary_expression(ParState *state)
 
     saved_sync = state->sync_set;
     state->sync_set = FOLLOW_expression;
+
+    // cast: '(' type_specifier ')' unary_expression
+    if (is_cast_start(state))
+    {
+        match(state, TOK_LPAREN);
+        type_specifier(state);
+        match(state, TOK_RPAREN);
+        unary_expression(state);
+
+        state->sync_set = saved_sync;
+        printf("[EXIT ] unary_expression\n");
+        return;
+    }
 
     switch (state->next)
     {
@@ -1519,7 +1830,10 @@ void unary_expression(ParState *state)
     printf("[EXIT ] unary_expression\n");
 }
 
-
+// ---------------------------------------------------
+// Parses primary expressions (literals, identifiers, calls, parenthesis, casts)
+// Pre: next begins a primary expr  Post: consumed one primary expr (or recovered)
+// ---------------------------------------------------
 void primary_expression(ParState *state)
 {
     const TokenType *saved_sync;
@@ -1531,29 +1845,47 @@ void primary_expression(ParState *state)
 
     switch (state->next)
     {
-        /* parenthesized expression */
         case TOK_LPAREN:
             match(state, TOK_LPAREN);
             expression(state);
             match(state, TOK_RPAREN);
             break;
 
-        /* literals */
-        case TOK_INT_LIT:
-        case TOK_FLOAT_LIT:
-            next_token(state);
+        /* aggregate literal: < ... > */
+        case TOK_LBLOCK:
+            match(state, TOK_LBLOCK);
+
+            /* optional value list */
+            if (state->next != TOK_RBLOCK)
+            {
+                expression(state);
+
+                while (state->next == TOK_COMMA)
+                {
+                    match(state, TOK_COMMA);
+                    expression(state);
+                }
+
+                /* allow optional trailing ';' inside aggregates, to support "< ... ; >" */
+                if (state->next == TOK_SEMI)
+                {
+                    match(state, TOK_SEMI);
+                }
+            }
+
+            match(state, TOK_RBLOCK);
             break;
 
+        case TOK_INT_LIT:
+        case TOK_FLOAT_LIT:
         case TOK_STRING_LIT:
             next_token(state);
             break;
 
-        /* field access starts explicitly */
         case TOK_FALT:
             field_access(state);
             break;
 
-        /* identifier-based */
         case TOK_IDENTIFIER:
             if (state->next_next == TOK_LPAREN)
             {
@@ -1587,22 +1919,87 @@ void primary_expression(ParState *state)
     printf("[EXIT ] primary_expression\n");
 }
 
+void function_call_statement(ParState *state)
+{
+    const TokenType *saved_sync;
+
+    printf("[ENTER] function_call_statement\n");
+
+    saved_sync = state->sync_set;
+    state->sync_set = FOLLOW_statement;
+
+    function_call(state);
+
+    /* optional ';' */
+    if (state->next == TOK_SEMI)
+        match(state, TOK_SEMI);
+
+    state->sync_set = saved_sync;
+
+    printf("[EXIT ] function_call_statement\n");
+}
 
 
-//Function calls
 void function_call(ParState *state)
 {
+    const TokenType *saved_sync;
+
     printf("[ENTER] function_call\n");
-    /* stub */
+
+    saved_sync = state->sync_set;
+    state->sync_set = FOLLOW_expression;
+
+    /* function name */
+    match(state, TOK_IDENTIFIER);
+
+    /* '(' */
+    match(state, TOK_LPAREN);
+
+    /* optional argument list */
+    if (state->next != TOK_RPAREN)
+    {
+        expression(state);
+
+        while (state->next == TOK_COMMA)
+        {
+            match(state, TOK_COMMA);
+            expression(state);
+        }
+    }
+
+    /* ')' */
+    match(state, TOK_RPAREN);
+
+    state->sync_set = saved_sync;
+
     printf("[EXIT ] function_call\n");
 }
 
 
+
 void argument_list(ParState *state)
 {
+    const TokenType *saved_sync;
+
     printf("[ENTER] argument_list\n");
-    /* stub */
+
+    saved_sync = state->sync_set;
+    state->sync_set = FOLLOW_expression;
+
+    /* first argument */
+    expression(state);
+
+    /* additional arguments */
+    while (state->next == TOK_COMMA)
+    {
+        match(state, TOK_COMMA);
+        expression(state);
+    }
+
+    state->sync_set = saved_sync;
+
     printf("[EXIT ] argument_list\n");
 }
+
 
 
