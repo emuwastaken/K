@@ -1,2 +1,0 @@
-te1efon
-apelsin

@@ -134,6 +134,8 @@ void next_token(ParState *state);
 TokenType peek_token(ParState *state, int offset);
 void sync_to_follow(ParState *state);
 void initializer(ParState *state);
-
+int scan_after_type_specifier(const ParState *state, int start_index);
+/* Add this prototype near your other static prototypes (above unary_expression use) */
+static int is_type_token(TokenType t);
 
 #endif /* PARSER_H */
