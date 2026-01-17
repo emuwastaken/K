@@ -9,9 +9,6 @@
 const Keyword keywords[] = {
 
     /* Structure */
-    { "PROGRAM",     TOK_PROGRAM },
-    { "FÖRFATTARE",  TOK_FORFATTARE },
-    //{ "ENTRE",       TOK_ENTRE },
 
     /* Types */
     { "HEL",         TOK_HEL },
@@ -90,6 +87,48 @@ const Keyword keywords[] = {
     { "VÄRDE VID",   TOK_DEREF },
     { "ADRESS AV",   TOK_ADDRESS },
     { "STORLEK AV",  TOK_STORLEKAV },
+    /* Type declarations */
+    { "ENUM",         TOK_ENUM },
+
+    /* Type qualifiers / storage / modifiers */
+    { "VOLATIL",      TOK_VOLATIL },
+    { "BEGRANSA",     TOK_BEGRANSA },   /* or "BEGRÄNSA" if you use diacritics */
+    { "EXTERN",       TOK_EXTERN },
+    { "AUTO",         TOK_AUTO },
+    { "REGISTER",     TOK_REGISTER },
+
+    { "OSIGNERAD",    TOK_OSIGNERAD },
+    { "SIGNERAD",     TOK_SIGNERAD },
+    { "KORT",         TOK_KORT },
+    { "LANG",         TOK_LANG },
+    { "DUBBEL",       TOK_DUBBEL },
+
+    /* Composite keyword */
+    { "LANG DUBBEL",  TOK_LANG_DUBBEL },
+
+    /* Flow */
+    { "GÅ TILL",      TOK_GOTO },
+    { "ETIKETT",      TOK_ETIKETT },
+
+    /* Arithmetic */
+    { "%",            TOK_MOD },
+
+    /* Bitwise (word-based) */
+    { "BITOCH",       TOK_BITAND },
+    { "BITELLER",     TOK_BITOR },
+    { "BITXOR",       TOK_BITXOR },
+    { "BITINTE",      TOK_BITNOT },
+
+    /* Shift (word-based) */
+    { "SKIFT",        TOK_SHIFT },
+    { "VÄNSTER",      TOK_VANSTER },
+    { "HÖGER",        TOK_HOGER },
+
+    /* Composite shift-updates */
+    { "VÄNSTER MED",  TOK_SHL_ASSIGN },
+    { "HÖGER MED",    TOK_SHR_ASSIGN },
+
+
 
     /* Sentinel */
     { NULL,          TOK_ERROR }
@@ -150,8 +189,6 @@ const char * tok2name(TokenType tok)
 {
     switch (tok)
     {
-        case TOK_PROGRAM:        return "TOK_PROGRAM";
-        case TOK_FORFATTARE:     return "TOK_FORFATTARE";
         //case TOK_ENTRE:          return "TOK_ENTRE";
         case TOK_HEL:            return "TOK_HEL";
         case TOK_FLYT:           return "TOK_FLYT";
@@ -217,6 +254,39 @@ const char * tok2name(TokenType tok)
         case TOK_LTE:            return "TOK_LTE";
         case TOK_GTE:            return "TOK_GTE";
 
+        case TOK_ENUM:        return "ENUM";
+
+        case TOK_VOLATIL:     return "VOLATIL";
+        case TOK_BEGRANSA:    return "BEGRANSA";
+        case TOK_EXTERN:      return "EXTERN";
+        case TOK_AUTO:        return "AUTO";
+        case TOK_REGISTER:    return "REGISTER";
+
+        case TOK_OSIGNERAD:   return "OSIGNERAD";
+        case TOK_SIGNERAD:    return "SIGNERAD";
+        case TOK_KORT:        return "KORT";
+        case TOK_LANG:        return "LANG";
+        case TOK_DUBBEL:      return "DUBBEL";
+        case TOK_LANG_DUBBEL: return "LANG DUBBEL";
+
+        case TOK_GOTO:        return "GÅ TILL";
+        case TOK_ETIKETT:     return "ETIKETT";
+
+        case TOK_MOD:         return "%";
+
+        case TOK_BITAND:      return "BITOCH";
+        case TOK_BITOR:       return "BITELLER";
+        case TOK_BITXOR:      return "BITXOR";
+        case TOK_BITNOT:      return "BITINTE";
+
+        case TOK_SHIFT:       return "SKIFT";
+        case TOK_VANSTER:     return "VÄNSTER";
+        case TOK_HOGER:       return "HÖGER";
+        case TOK_SHL_ASSIGN:  return "VÄNSTER MED";
+        case TOK_SHR_ASSIGN:  return "HÖGER MED";
+
+
+
 
 
         case TOK_IDENTIFIER:     return "TOK_IDENTIFIER";
@@ -233,8 +303,6 @@ const char * tok2lexeme(TokenType tok)
     switch (tok)
     {
         /* Structure */
-        case TOK_PROGRAM:        return "PROGRAM";
-        case TOK_FORFATTARE:     return "FÖRFATTARE";
         //case TOK_ENTRE:          return "ENTRE";
 
         /* Types */
@@ -294,6 +362,36 @@ const char * tok2lexeme(TokenType tok)
         case TOK_GT:   return "STÖRRE";
         case TOK_LTE:  return "MINLIK";
         case TOK_GTE:  return "STÖLIK";
+
+        case TOK_ENUM:       return "ENUM";
+        case TOK_EXTERN:     return "EXTERN";
+        case TOK_GOTO:       return "GÅ TILL";
+        case TOK_ETIKETT:    return "ETIKETT";
+
+        case TOK_MOD:        return "%";
+
+        case TOK_BITAND:     return "BITOCH";
+        case TOK_BITOR:      return "BITELLER";
+        case TOK_BITXOR:     return "BITXOR";
+        case TOK_BITNOT:     return "BITINTE";
+
+        case TOK_SHIFT:      return "SKIFT";
+        case TOK_VANSTER:    return "VÄNSTER";
+        case TOK_HOGER:      return "HÖGER";
+        case TOK_SHL_ASSIGN: return "VÄNSTER MED";
+        case TOK_SHR_ASSIGN: return "HÖGER MED";
+
+        case TOK_OSIGNERAD:   return "OSIGNERAD";
+        case TOK_SIGNERAD:    return "SIGNERAD";
+        case TOK_KORT:        return "KORT";
+        case TOK_LANG:        return "LANG";
+        case TOK_DUBBEL:      return "DUBBEL";
+        case TOK_LANG_DUBBEL: return "LANG DUBBEL";
+        case TOK_VOLATIL:     return "VOLATIL";
+        case TOK_BEGRANSA:    return "BEGRÄNSA";
+        case TOK_AUTO:        return "AUTO";
+        case TOK_REGISTER:    return "REGISTER";
+
 
 
         /* Generic categories */

@@ -88,6 +88,49 @@ typedef enum TokenType {
     TOK_FLOAT_LIT,
     TOK_STRING_LIT,
 
+    // Keywords
+    TOK_ENUM,
+    TOK_GOTO,
+    TOK_ETIKETT,
+
+    // Operators
+    TOK_MOD,
+
+    TOK_BITAND,
+    TOK_BITOR,
+    TOK_BITXOR,
+    TOK_BITNOT,
+
+    TOK_SHIFT,
+    TOK_VANSTER,
+    TOK_HOGER,
+
+    TOK_SHL_ASSIGN,   // "VÄNSTER MED"
+    TOK_SHR_ASSIGN,   // "HÖGER MED"
+
+    /* -----------------------------
+    Type modifiers / storage
+    ----------------------------- */
+    TOK_VOLATIL,
+    TOK_BEGRANSA,
+    TOK_EXTERN,
+    TOK_AUTO,
+    TOK_REGISTER,
+    TOK_OSIGNERAD,
+    TOK_SIGNERAD,
+    TOK_KORT,
+    TOK_LANG,
+    TOK_DUBBEL,
+    TOK_LANG_DUBBEL,
+
+
+    /* -----------------------------
+    Control / jump
+    ----------------------------- */
+
+
+
+
     // Misc
     TOK_EOF,
     TOK_ERROR

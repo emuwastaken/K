@@ -137,5 +137,6 @@ void initializer(ParState *state);
 int scan_after_type_specifier(const ParState *state, int start_index);
 /* Add this prototype near your other static prototypes (above unary_expression use) */
 static int is_type_token(TokenType t);
+void continue_statement(ParState *state);
 
 #endif /* PARSER_H */
