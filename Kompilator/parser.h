@@ -13,11 +13,13 @@ typedef struct ParState
     TokenBuffer *tokens;
     int          token_count;
 
+    char       **lexemes;      
+
     int          index;
 
-    TokenType    current;     /* last consumed */
-    TokenType    next;        /* lookahead 1 */
-    TokenType    next_next;   /* lookahead 2 */
+    TokenType    current;
+    TokenType    next;
+    TokenType    next_next;
 
     int          line;
     int          column;
@@ -27,6 +29,7 @@ typedef struct ParState
 
     const TokenType *sync_set;
 } ParState;
+
 
 
 /* ---------------------------------------------

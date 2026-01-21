@@ -73,24 +73,20 @@ void lexer(
 )
 {
     LexState state = {0};
-    //printd("Init state");
-    init_lex_state(&state, char_count, decode_buffer);      //Init struct for lexing
-    //printd("Entering lex_scan()");
-    lex_scan(&state);                                       //While loop scan
-    init_lex_resolve(&state);                               //Re-init struct for token resolving
-    lex_resolve(&state);                                    //While loop resolver
 
-    // tokens
-    *out_tokens      = state.tokens;
-    *out_token_count = state.token_count;
+    init_lex_state(&state, char_count, decode_buffer);
+    lex_scan(&state);
 
-    // lexemes
-    *out_lexemes       = state.lexemes;
-    *out_lexeme_rows   = state.lexeme_row;
-    *out_lexeme_cols   = state.lexeme_col;
-    *out_lexeme_count  = state.lexeme_count;
+    init_lex_resolve(&state);
+    lex_resolve(&state);
 
+    *out_tokens       = state.tokens;
+    *out_token_count  = state.token_count;
 
+    *out_lexemes      = state.resolved_lexemes;
+    *out_lexeme_count = state.token_count;
+    *out_lexeme_rows  = NULL;   // resolved stream already carries row/col
+    *out_lexeme_cols  = NULL;
 }
 
 /* Subroutines */
@@ -580,53 +576,54 @@ void init_lex_resolve(LexState *state)
     state->token_count    = 0;
 
     state->tokens = malloc(state->token_capacity * sizeof(TokenBuffer));
+    state->resolved_lexemes = malloc(state->token_capacity * sizeof(char *));
 
-    if (!state->tokens)
+    if (!state->tokens || !state->resolved_lexemes)
     {
-        fprintf(stderr, "Fatal: failed to allocate token storage\n");
+        fprintf(stderr, "Fatal: failed to allocate resolve storage\n");
         exit(1);
     }
 
-    // Defensive initialization
     for (int i = 0; i < state->token_capacity; i++)
     {
         state->tokens[i].token  = TOK_ERROR;
-        state->tokens[i].kind   = 0;
         state->tokens[i].row    = -1;
         state->tokens[i].col    = -1;
+        state->tokens[i].kind   = 0;
         state->tokens[i].lexeme = NULL;
+
+        state->resolved_lexemes[i] = NULL;
     }
 }
 
-
-void append_token(LexState *state, TokenType tok, int row, int col)
+void append_token(LexState *state, TokenType tok, char *lexeme, int row, int col)
 {
-    // ensure capacity
     if (state->token_count >= state->token_capacity)
     {
-        state->token_capacity =
-            (state->token_capacity == 0) ? 16 : state->token_capacity * 2;
+        state->token_capacity *= 2;
 
         state->tokens = realloc(
             state->tokens,
             state->token_capacity * sizeof(TokenBuffer)
         );
 
-        if (!state->tokens)
+        state->resolved_lexemes = realloc(
+            state->resolved_lexemes,
+            state->token_capacity * sizeof(char *)
+        );
+
+        if (!state->tokens || !state->resolved_lexemes)
         {
-            fprintf(stderr, "Fatal: token realloc failed\n");
+            fprintf(stderr, "Fatal: resolve realloc failed\n");
             exit(1);
         }
     }
 
-    // store token
-    state->tokens[state->token_count].token  = tok;
-    state->tokens[state->token_count].row    = row;
-    state->tokens[state->token_count].col    = col;
+    state->tokens[state->token_count].token = tok;
+    state->tokens[state->token_count].row   = row;
+    state->tokens[state->token_count].col   = col;
 
-    // optional: fill later during resolve
-    state->tokens[state->token_count].kind   = 0;
-    state->tokens[state->token_count].lexeme = NULL;
+    state->resolved_lexemes[state->token_count] = strdup(lexeme);
 
     state->token_count++;
 }
@@ -640,16 +637,24 @@ void lex_resolve(LexState *state)
         int   col = state->lexeme_col[i];
 
         // -----------------------------------------
-        // Composite keyword check
+        // Composite keyword resolution
         // -----------------------------------------
         if (i + 1 < state->lexeme_count)
         {
-            TokenType pair =
-                lookup_pair(lex, state->lexemes[i + 1]);
+            TokenType pair = lookup_pair(lex, state->lexemes[i + 1]);
 
             if (pair != TOK_ERROR)
             {
-                append_token(state, pair, row, col);
+                char composite[MAXLEXSIZE];
+                snprintf(
+                    composite,
+                    sizeof(composite),
+                    "%s %s",
+                    lex,
+                    state->lexemes[i + 1]
+                );
+
+                append_token(state, pair, composite, row, col);
                 i++; // consume second lexeme
                 continue;
             }
@@ -659,7 +664,7 @@ void lex_resolve(LexState *state)
         // Single lexeme resolution
         // -----------------------------------------
         TokenType tok = lookup(lex);
-        append_token(state, tok, row, col);
+        append_token(state, tok, lex, row, col);
     }
 
     // -----------------------------------------
@@ -668,9 +673,9 @@ void lex_resolve(LexState *state)
     append_token(
         state,
         TOK_EOF,
+        "EOF",
         state->lexeme_row[state->lexeme_count - 1],
         state->lexeme_col[state->lexeme_count - 1]
     );
 }
-
 

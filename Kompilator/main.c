@@ -79,15 +79,16 @@ int main(int argc, char *argv[])
         &lexeme_col
     );
     
-    /*
+   
 
 
     for (int i = 0; i < lexeme_count; i++)
     {
-        printf("Lexeme %d: %s (row: %d, col: %d)\n", i, lexemes[i], lexeme_row[i], lexeme_col[i]);
+        //printf("This breaks dont it\n");
+        printf("Lexeme %d: %s \n", i, lexemes[i]);
     }
 
-
+ /*
     for (int i = 0; i < token_count; i++)
     {
         printf("Token %d: %s\n", i, tok2name(token_buffer[i].token));

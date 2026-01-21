@@ -24,6 +24,7 @@ typedef struct TokenBuffer {
 typedef struct LexState {
 
     char ** lexemes;                 //Stores all lexemes
+    char ** resolved_lexemes;
     char * current_lexeme;
     int current_lexeme_len;
 
